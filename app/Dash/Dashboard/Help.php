@@ -1,10 +1,12 @@
 <?php
 namespace App\Dash\Dashboard;
 
+use App\Models\Plan;
 use Dash\Extras\Inputs\Card;
 //use Dash\Extras\Inputs\HTML;
 use Dash\Resource;
 use \App\Models\User;
+use Facade\Ignition\Support\Packagist\Package;
 
 class Help extends Resource {
 
@@ -13,46 +15,39 @@ class Help extends Resource {
 	 * or by view instnance render blade file
 	 * @return array
 	 */
-	public static function cards() {
-		return [
-			Card::small()
-				->title(function () {
-					return 'All Users';
-				})
-				->column(function () {
-					return '3';
-				})
-				->icon(function () {
-					return '<i class="fa fa-users"></i>';
-				})
-				->content(function () {
-					return User::where('account_type', 'user')->count();
-				})
-				->color(function () {
-					return 'success';
-				})// primary,success,dark,info,
-				->render(),
-			Card::small()
-				->title(function () {
-					return 'All Admins';
-				})
-				->column(function () {
-					return '3';
-				})
-				->icon(function () {
-					return '<i class="fa fa-users"></i>';
-				})
-				->content(function () {
-					return User::where('account_type', 'admin')->count();
-				})
-				->color(function () {
-					return 'primary';
-				})// primary,success,dark,info,
-				->render(),
-			view('dash::help')	->render(),
-			//HTML::render('<h1>Some HTML</h1>'),
+    public static function cards()
+    {
+        $plans = Plan::all();
 
-		];
-	}
+        $cards = [];
+
+        foreach ($plans as $plan) {
+            $cards[] = Card::small()
+                ->title(function () use ($plan){
+                    return $plan->name;
+                })
+                ->type(function () use ($plan){
+                    return $plan->type;
+                })
+                ->column(function () {
+                    return '3';
+                })
+                ->icon(function () {
+                    return '<i class="fa fa-users"></i>';
+                })
+                ->content(function () {
+                    return User::where('account_type', 'user')->count();
+                })
+                ->color(function () {
+                    return 'success';
+                })
+                ->link(function () use ($plan) {
+                    return '/private_me/resource/Plan/'.$plan->id;
+                })
+                ->render();
+        }
+
+        return $cards;
+    }
 
 }

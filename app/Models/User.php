@@ -7,11 +7,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Tymon\JWTAuth\Contracts\JWTSubject;
-use Illuminate\Support\Facades\Hash;
 
-class User extends Authenticatable  implements JWTSubject
-{
+class User extends Authenticatable {
 	use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
 	/**
@@ -20,27 +17,22 @@ class User extends Authenticatable  implements JWTSubject
 	 * @var array<int, string>
 	 */
 	protected $fillable = [
-		'account_type',
-        'admin_group_id',
-        'name',
-        'phone',
-        'password',
-        'profile',
-        'uuid','city_id',
+		'id',
+		'f_name',
+		'l_name',
+		'email',
+		'password',
+		'account_type', // admin | user
+		'admin_group_id', // admin_group_id
+		'created_at',
+		'updated_at',
+		'deleted_at',
         'device_token',
-        'uuid'
+        'verified',
+        'active'
 	];
 
 	protected $deleted_at = 'deleted_at';
-
-    //to arrange the user aattribute and push the id to the beginning of the array
-    public function toArray()
-    {
-        $userArray = parent::toArray();
-        $userArray = array_merge(['id' => $this->id], $userArray);
-        return $userArray;
-    }
-
 
 	/**
 	 * The attributes that should be hidden for serialization.
@@ -50,8 +42,6 @@ class User extends Authenticatable  implements JWTSubject
 	protected $hidden = [
 		'password',
 		'remember_token',
-        'updated_at',
-        'created_at'
 	];
 
 	/**
@@ -62,47 +52,6 @@ class User extends Authenticatable  implements JWTSubject
 	protected $casts = [
 		'email_verified_at' => 'datetime',
 	];
-
-
-        /**
-     * Get the identifier that will be stored in the subject claim of the JWT.
-     *
-     * @return mixed
-     */
-    public function getJWTIdentifier()
-    {
-        return $this->getKey();
-    }
-
-    /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
-     *
-     * @return array
-     */
-    public function getJWTCustomClaims()
-    {
-        return [];
-    }
-
-
-    public function getDeviceTokenAttribute($value)
-    {
-        // Check if the value is already an array
-        if (is_array($value)) {
-            return $value;
-        }
-
-        // Check if the value is a JSON string
-        if (is_string($value) && json_decode($value) !== null) {
-            return json_decode($value, true);
-        }
-
-        // If none of the above conditions match, return an empty array
-        return [];
-
-    }
-
-
 
 	public function getCreatedAtAttribute($date) {
 		return empty($date) ? $date : date('Y-m-d', strtotime($date));
@@ -123,20 +72,5 @@ class User extends Authenticatable  implements JWTSubject
 	public function admingroup() {
 		return $this->belongsTo(AdminGroup::class, 'admin_group_id');
 	}
-
-    public function provider()
-    {
-        return $this->hasOne(Provider::class);
-    }
-
-    public function ratings()
-    {
-        return $this->hasMany(Rating::class, 'user_id');
-    }
-
-    public function city()
-    {
-        return $this->belongsTo(City::class);
-    }
 
 }

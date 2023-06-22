@@ -47,7 +47,7 @@
                                         <a style="background-color: #15c;
                                         color: #fff;
                                         padding: 3px 15px;
-                                        text-decoration: none;" href="{{ route('captainAsk.resetPassword', $token) }}">  {{ __('dash::dash.reset_password_box_title_btn') }}  </a>
+                                        text-decoration: none;" href="{{ route('private_me.resetPassword', $token) }}">  {{ __('dash::dash.reset_password_box_title_btn') }}  </a>
                                     </div>
                                 </div>
                             </div>

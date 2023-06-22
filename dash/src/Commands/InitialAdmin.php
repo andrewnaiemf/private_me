@@ -81,7 +81,7 @@ class InitialAdmin extends Command {
 			}
 
 			User::firstOrCreate([
-				'name' => 'admin',
+				'first_name' => 'admin',
 				'email' => 'test@test.com',
 				'password' => bcrypt(123456),
 				'account_type' => 'admin',

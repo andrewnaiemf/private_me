@@ -13,17 +13,14 @@ class CreateUsersTable extends Migration {
 	public function up() {
 		Schema::create('users', function (Blueprint $table) {
 				$table->id();
-                $table->uuid('uuid');
-                $table->text('device_token')->nullable();
 				$table->string('name');
-				$table->string('email')->nullable()->unique();
+				$table->string('email')->unique();
 				$table->string('phone')->nullable();
-				// $table->enum('gender', ['male', 'female'])->nullable();
-				// $table->timestamp('email_verified_at')->nullable();
-				$table->string('password')->nullable();
-				$table->enum('account_type', ['user', 'admin','provider'])->default('user');
-                $table->string('profile')->nullable();
-
+				$table->enum('gender', ['male', 'female'])->nullable();
+				$table->timestamp('email_verified_at')->nullable();
+				$table->string('password')->default('no_password_for_user')
+					->nullable();
+				$table->enum('account_type', ['user', 'admin'])->default('user');
 				$table->foreignId('admin_group_id')->nullable()->constrained('admin_groups')->references('id')->onDelete('cascade')->onUpdate('cascade');
 				$table->rememberToken();
 				$table->softDeletes();

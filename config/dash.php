@@ -4,13 +4,13 @@ return [
 	 * App NAME
 	 * @param string
 	 */
-	'APP_NAME' => env('APP_NAME', 'dash'),
+	'APP_NAME' => env('APP_NAME', 'private_me'),
 
 	/**
 	 * App PATH IN DASHBOARD dont leave this is empty default is dash
 	 * @param string
 	 */
-	'DASHBOARD_PATH' => env('DASHBOARD_PATH', 'dash'),
+	'DASHBOARD_PATH' => env('DASHBOARD_PATH', 'private_me'),
 
 	/**
 	 * The key to getting updates
@@ -30,13 +30,13 @@ return [
 	 */
 	'DASHBOARD_LANGUAGES' => [
 		'en'                 => 'English',
-		//'ar'                 => 'العربية',
+		'ar'                 => 'العربية',
 	],
 	/**
 	 * DEFAULT LANGUAGE IN DASHBOARD
 	 * @param string
 	 */
-	'DEFAULT_LANG' => env('DEFAULT_LANG', 'en'),
+	'DEFAULT_LANG' => env('DEFAULT_LANG', 'ar'),
 
 	/**
 	 * GUARD default to login dashboard by this driver

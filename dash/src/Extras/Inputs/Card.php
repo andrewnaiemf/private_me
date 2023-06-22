@@ -4,6 +4,7 @@ namespace Dash\Extras\Inputs;
 class Card {
 	protected static $link     = '';
 	protected static $title     = '';
+	protected static $type     = '';
 	protected static $style     = '';
 	protected static $footer    = '';
 	protected static $icon      = '';
@@ -20,7 +21,10 @@ class Card {
 		static ::$title = !is_object($title)?$title:$title();
 		return new static ;
 	}
-
+	public static function type($type) {
+		static ::$type = !is_object($type)?$type:$type();
+		return new static ;
+	}
 	public static function small() {
 		self::$style = 'small';
 		return new static ;
@@ -58,6 +62,7 @@ class Card {
 		return view('dash::cards.'.static ::$style.'_card', [
 				'link'     => static ::$link,
 				'title'     => static ::$title,
+				'type'      => static ::$type,
 				'footer'    => static ::$footer,
 				'icon'      => static ::$icon,
 				'content'   => static ::$content,
