@@ -35,10 +35,10 @@ class Plan extends Resource {
 
 	/**
 	 * change icon in navigation menu
-	 * you can use font awesome icons LIKE (<i class="fa fa-users"></i>)
+	 * you can use font awesome icons LIKE (<i class="fa fa-list"></i>)
 	 * @param static property string
 	 */
-	public static $icon = ''; // put <i> tag or icon name
+	public static $icon = '<i class="fas fa-list"></i>'; // put <i> tag or icon name
 
 	/**
 	 * title static property to labels in Rows,Show,Forms
@@ -69,7 +69,7 @@ class Plan extends Resource {
 	 * @return string
 	 */
 	public static function customName() {
-		return 'Plan';
+		return __('dash.plans.plans');
 	}
 
 	/**
@@ -87,21 +87,21 @@ class Plan extends Resource {
 	public function fields() {
 		return [
 			id()->make(__('dash::dash.id'), 'id'),
-            text()->make('Name-Type', 'name_type')
+            text()->make(__('dash.plans.Name-Type'), 'name_type')
                 ->showInShow(),
-            text()->make('Name', 'name')
+            text()->make(__('dash.plans.Name'), 'name')
                 ->translatable([
-                    'ar' => 'العربية',
-                    'en' => 'English',
+                'ar' => 'العربية',
+                'en' => 'English',
                 ])
                 ->showInShow(),
-            text()->make('Cost', 'cost')
+            text()->make(__('dash.plans.Cost'), 'cost')
                 ->showInShow(),
-            select()->make('Type', 'type')
-            ->selected('type')
+            select()->make(__('dash.plans.Type'), 'type')
+            ->selected(__('dash.plans.type'))
             ->options([
-                'Monthly'  => 'monthly',
-                'Yearly' => 'yearly',
+                __('dash.plans.Monthly')  => __('dash.plans.Monthly'),
+                __('dash.plans.Yearly') => __('dash.plans.Yearly'),
                ]),
             
             hasMany()

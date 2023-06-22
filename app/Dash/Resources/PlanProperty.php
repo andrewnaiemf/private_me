@@ -26,7 +26,7 @@ class PlanProperty extends Resource {
 	 * and add this key directly users
 	 * @param static property
 	 */
-	public static $group = 'PlanProperty'; 
+	public static $group = 'Plan'; 
 
 	/**
 	 * show or hide resouce In Navigation Menu true|false
@@ -69,7 +69,7 @@ class PlanProperty extends Resource {
 	 * @return string
 	 */
 	public static function customName() {
-		return 'PlanProperty';
+		return __('dash.properties.planproperty');
 	}
 
 	/**
@@ -89,17 +89,17 @@ class PlanProperty extends Resource {
             id()->make(__('dash::dash.id'), 'id'),
             
             belongsTo()
-            ->make(__('dash.plans'), 'plan')->resource(\App\Dash\Resources\Plan::class)
+            ->make(__('dash.plans.plans'), 'plan')->resource(\App\Dash\Resources\Plan::class)
             ->hideInIndex(), 
 
-            text()->make('Name', 'name')
+            text()->make(__('dash.properties.Name'), 'name')
                 ->translatable([
                     'ar' => 'العربية',
                     'en' => 'English',
                 ])
 			    ->showInShow(),
 
-            text()->make('Value', 'value')
+            text()->make(__('dash.properties.Value'), 'value')
                 ->translatable([
                     'ar' => 'العربية',
                     'en' => 'English',
@@ -108,7 +108,7 @@ class PlanProperty extends Resource {
 
             
             image()
-                ->make(__('dash.icon'),'icon_url')
+                ->make(__('dash.properties.icon'),'icon_url')
                 ->path(function ($model)
                 {
                     return 'storage/plans/'.$model->plan_id;
