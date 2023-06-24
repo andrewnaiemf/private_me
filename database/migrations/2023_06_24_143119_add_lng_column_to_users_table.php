@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddCityIdInUsersTable extends Migration
+class AddLngColumnToUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,7 @@ class AddCityIdInUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->unsignedBigInteger('city_id')->nullable()->afte('device_token');
-            $table->foreign('city_id')->references('id')->on('cities');
+            $table->string('lng')->default('en')->after('id');
         });
     }
 
@@ -27,8 +26,7 @@ class AddCityIdInUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign(['city_id']);
-            $table->dropColumn('city_id');
+            $table->string('lng');
         });
     }
 }

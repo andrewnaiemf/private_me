@@ -15,12 +15,14 @@ class CreateQuestionsTable extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
-            $table->text('question_ar')->nullable();
-            $table->text('question_en')->nullable();
-            $table->text('question_eu')->nullable();
-            $table->text('answer_ar')->nullable();
-            $table->text('answer_en')->nullable();
-            $table->text('answer_eu')->nullable();
+            $table->timestamps();
+        });
+        
+        Schema::create('question_translations', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('question_id')->constrained()->onDelete('cascade');
+            $table->string('locale')->index();
+            $table->text('question')->nullable();
             $table->timestamps();
         });
     }
@@ -32,6 +34,7 @@ class CreateQuestionsTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('question_translations');
         Schema::dropIfExists('questions');
     }
 }

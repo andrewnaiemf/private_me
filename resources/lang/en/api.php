@@ -29,6 +29,7 @@ return [
     'Costshouldover' => 'Cost should be over ',
     'cannotstarttripnow' => 'You can not start a new trip now',
     'pleaseContactWithAdministrator' => 'Please contact with administrator',
-    'suggestion_sent_successfully' => 'suggestion sent successfully'
+    'suggestion_sent_successfully' => 'suggestion sent successfully',
+    'chackYourEmailToResetYourPassword' => 'chack your email to reset your password',
 
 ];

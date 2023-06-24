@@ -5,29 +5,32 @@ namespace App\Models;
 use Astrotomic\Translatable\Locales;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Astrotomic\Translatable\Translatable;
 
 class Question extends Model
 {
-    use HasFactory;
+    use HasFactory,Translatable;
 
+    public $translatedAttributes = ['question'];
+
+    protected $fillable = [];
+
+    public function getTable()
+    {
+        return 'questions';
+    }
 
 
     protected $hidden =[
-        'deleted_at',
         'created_at',
         'updated_at',
     ];
 
-    public function toArray()
+
+
+    public function translations()
     {
-
-        $lang = app(Locales::class)->current();
-
-        $array['question'] =$this->{'question_'.$lang};
-        $array['answer'] =$this->{'answer_'.$lang};
-
-        return $array;
+        return $this->hasMany(QuestionTranslation::class, 'question_id');
     }
-
 
 }

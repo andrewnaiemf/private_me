@@ -46,6 +46,12 @@ class Users extends Resource {
 					// 'unique:users,email,'.$this->id,
 
 				])->ruleWhenCreate('unique:users', 'email'),
+            
+            text()->make('Created date', 'created_at')
+                ->showInShow(),
+
+            text()->make('Is subscribed', '')
+                ->showInShow(),
 			password()
 			->make('Password', 'password')
 			->hideInUpdate()

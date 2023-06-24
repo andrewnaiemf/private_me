@@ -16,10 +16,9 @@ class AddColumnsToUsersTable extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->longText('device_token')->nullable()->after('id');
             $table->string('email')->nullable(false)->change();
-            $table->string('f_name')->after('device_token');
-            $table->renameColumn('name','l_name');
 			$table->boolean('verified')->default(false)->after('phone');
 			$table->boolean('active')->default(false)->after('verified');
+			$table->boolean('terms')->default(false)->after('active');
         });
     }
 
@@ -31,7 +30,10 @@ class AddColumnsToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            //
+            $table->longText('device_token');
+            $table->string('email');
+			$table->boolean('verified');
+			$table->boolean('active');
         });
     }
 }

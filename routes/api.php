@@ -1,10 +1,10 @@
 <?php
 
 use App\Http\Controllers\API\CityController;
-use App\Http\Controllers\API\Provider\AuthController;
-use App\Http\Controllers\API\Provider\DepartmentController;
+use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\QuestionController;
 use App\Http\Controllers\API\SuggestionController;
+use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -33,10 +33,7 @@ Route::group([
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
 
-    Route::post('reset_password', [AuthController::class, 'reset']);
-    Route::get('cities',[CityController::class, 'index' ]);
-    Route::get('departments',[DepartmentController::class, 'index' ]);
-
+    Route::post('forget_password', [AuthController::class, 'forgetPassword']);
 });
 
 
@@ -49,7 +46,10 @@ Route::group([
 
     Route::get('logout',  [AuthController::class, 'logout']);
     Route::post('refresh',  [AuthController::class, 'refresh']);
-    Route::get('me' ,  [AuthController::class, 'me']);
+    Route::post('change_password' ,  [AuthController::class, 'changepassword']);
+
+    Route::get('me' ,  [UserController::class, 'me']);
+    Route::post('user' ,  [UserController::class, 'update']);
 
     Route::get('questions',[QuestionController::class, 'index' ]);
     Route::post('suggestion',[SuggestionController::class, 'store' ]);
