@@ -35,7 +35,8 @@ class User extends Authenticatable implements JWTSubject{
         'answer',
         'terms',
         'lng',
-        'profile'
+        'profile',
+        'used_storage'
 	];
     
     public function toArray()
@@ -132,5 +133,9 @@ class User extends Authenticatable implements JWTSubject{
 	public function admingroup() {
 		return $this->belongsTo(AdminGroup::class, 'admin_group_id');
 	}
+
+    public function package(){
+        return $this->hasOne(Package::class);
+    }
 
 }

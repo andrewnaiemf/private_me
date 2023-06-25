@@ -13,8 +13,28 @@ class Plan  extends Model implements TranslatableContract
 
     public $translatedAttributes = ['name'];
 
+    public $fillable = ['type'];
+
+    public function getTypeAttribute($value)
+    {
+        if ($value === 'شهريا' && app()->getLocale() === 'en') {
+            return 'Monthly';
+        }elseif($value === 'سنويا' && app()->getLocale() === 'en'){
+            return 'Yearly';
+
+        }
+
+        return $value;
+    }
+
     public function planProperties()
     {
         return $this->hasMany(PlanProperty::class);
     }
+
+    protected $hidden = [
+		'crraed_at',
+        'updated_at',
+        'deleted_at',
+	];
 }
