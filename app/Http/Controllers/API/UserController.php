@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\Services\ScheduleService;
-
+use Storage;
 class UserController extends Controller
 {
     /**
@@ -109,10 +109,9 @@ class UserController extends Controller
         $path = 'Customer/' .$user->id. '/Profile/';
 
         $userProfile =  $user->profile;
-        if ($userProfile) {
-
+        if ($userProfile && file_exists(public_path('storage/'.$userProfile))) {
             $segments = explode('/', $userProfile);
-            $imageName = $segments[2];
+            $imageName = $segments[3];
             $profile->storeAs('public/'.$path,$imageName);
 
         }else{

@@ -16,8 +16,9 @@ class AddQuestionIdAndAnswerColumnToUsersTable extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->unsignedBigInteger('question_id')->nullable();
             $table->string('answer')->nullable();
-            
-            $table->foreign('question_id')->references('id')->on('questions')->onDelete('cascade');        });
+
+            $table->foreign('question_id')->references('id')->on('questions')->onDelete('cascade');
+        });
     }
 
     /**

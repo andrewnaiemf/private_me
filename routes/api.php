@@ -7,7 +7,8 @@ use App\Http\Controllers\API\PlanController;
 use App\Http\Controllers\API\QuestionController;
 use App\Http\Controllers\API\SuggestionController;
 use App\Http\Controllers\API\UserController;
-use App\Models\Package;
+use App\Http\Controllers\API\DirectoryController;
+use App\Http\Controllers\API\UploadUserDataController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -57,6 +58,10 @@ Route::group([
     Route::resource('plan' ,  PlanController::class);
 
     Route::resource('package' ,  PackageController::class);
+
+    Route::resource('directory' ,  DirectoryController::class);
+
+    Route::resource('upload' ,  UploadUserDataController::class);
 
     Route::get('questions',[QuestionController::class, 'index' ]);
     Route::post('suggestion',[SuggestionController::class, 'store' ]);

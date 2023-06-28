@@ -4,11 +4,11 @@ use Dash\Resource;
 use App\Dash\Resources\Plan;
 
 class PlanProperty extends Resource {
-	
+
 	/**
 	 * define Model of resource
 	 * @param Model Class
-	 */ 
+	 */
 	public static $model = \App\Models\PlanProperty::class ;
 
 
@@ -26,7 +26,7 @@ class PlanProperty extends Resource {
 	 * and add this key directly users
 	 * @param static property
 	 */
-	public static $group = 'Plan'; 
+	public static $group = 'Plan';
 
 	/**
 	 * show or hide resouce In Navigation Menu true|false
@@ -87,10 +87,10 @@ class PlanProperty extends Resource {
 	public function fields() {
 		return [
             id()->make(__('dash::dash.id'), 'id'),
-            
+
             belongsTo()
             ->make(__('dash.plans.plans'), 'plan')->resource(\App\Dash\Resources\Plan::class)
-            ->hideInIndex(), 
+            ->hideInIndex(),
 
             text()->make(__('dash.properties.Name'), 'name')
                 ->translatable([
@@ -106,12 +106,12 @@ class PlanProperty extends Resource {
                 ])
             ->showInShow(),
 
-            
+
             image()
                 ->make(__('dash.properties.icon'),'icon_url')
                 ->path(function ($model)
                 {
-                    return 'storage/plans/'.$model->plan_id;
+                    return 'public/plans/'.$model->plan_id;
                 })
                 ->accept('image/*')
                 ->rule('required','image'),

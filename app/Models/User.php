@@ -36,9 +36,9 @@ class User extends Authenticatable implements JWTSubject{
         'terms',
         'lng',
         'profile',
-        'used_storage'
+        'un_used_storage'
 	];
-    
+
     public function toArray()
     {
         $userArray = parent::toArray();
@@ -136,6 +136,10 @@ class User extends Authenticatable implements JWTSubject{
 
     public function package(){
         return $this->hasOne(Package::class);
+    }
+
+    public function directories(){
+        return $this->hasMany(Directory::class);
     }
 
 }

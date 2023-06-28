@@ -20,6 +20,7 @@ class FileManagerModel extends Model {
 		'size',
 		'size_bytes',
 		'mimtype',
+        'directory_id'
 	];
 
 	public function user() {

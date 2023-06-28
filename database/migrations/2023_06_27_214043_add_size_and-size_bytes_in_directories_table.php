@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddUseStorageColumnToUsersTable extends Migration
+class AddSizeAndSizeBytesInDirectoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddUseStorageColumnToUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('un_used_storage')->nullable()->after('profile');
+        Schema::table('directories', function (Blueprint $table) {
+			$table->bigInteger('size_bytes')->nullable()->after('name');
         });
     }
 
@@ -25,8 +25,8 @@ class AddUseStorageColumnToUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('used_storage');
+        Schema::table('directories', function (Blueprint $table) {
+			$table->bigInteger('size_bytes');
         });
     }
 }

@@ -13,7 +13,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Carbon;
 
 class AuthController extends Controller
-{    
+{
     public function register(Request $request)
     {
 
@@ -26,7 +26,7 @@ class AuthController extends Controller
 
         $user = $this->createUser($request);
 
-        
+
         $credentials = $request->only(['email','password','question_id','answer']);
 
         $token= JWTAuth::attempt($credentials);
@@ -166,7 +166,7 @@ class AuthController extends Controller
     }
 
     public function changepassword(Request $request){
-        
+
         $user = User::find(auth()->user()->id);
 
         $validator = Validator::make($request->all(), [
@@ -191,7 +191,7 @@ class AuthController extends Controller
 
         return $this->returnSuccessMessage( trans("api.Password_updated_successfully") );
     }
-    
+
     public function showResetForm($token = null)
     {
         if ($token) {
