@@ -54,10 +54,12 @@ Route::group([
 
     Route::get('me' ,  [UserController::class, 'me']);
     Route::post('user' ,  [UserController::class, 'update']);
+    Route::delete('user/{id}' ,  [UserController::class, 'destroy']);
 
     Route::resource('plan' ,  PlanController::class);
 
     Route::resource('package' ,  PackageController::class);
+    Route::post('package/cancel' ,[PackageController::class, 'cancel' ]);
 
     Route::resource('directory' ,  DirectoryController::class);
 

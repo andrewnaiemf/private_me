@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\Services\ScheduleService;
+use Illuminate\Support\Facades\File;
 use Storage;
 class UserController extends Controller
 {
@@ -152,7 +153,26 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::find($id);
+
+        //delete all user storage.
+        $path = "storage/Customer/{$user->id}";
+
+        if (file_exists(public_path($path))) {
+
+            $user->update(['un_used_storage' => 500 * 1048576]);
+
+            File::deleteDirectory(public_path($path));
+
+            // Delete directories and their associated files
+            $user->directories()->each(function ($directory) {
+                $directory->files()->delete();
+                $directory->delete();
+            });
+
+        }
+        $user->forceDelete();
+        return $this->returnSuccessMessage( trans("api.accountDeletedsuccessfully") );
     }
 
 }

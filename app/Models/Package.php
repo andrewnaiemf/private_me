@@ -11,7 +11,7 @@ class Package extends Model
     use HasFactory,SoftDeletes;
 
 
-    public $fillable = ['storage','user_id' ,'plan_id'];
+    public $fillable = ['storage','user_id' ,'plan_id','content','transaction_id','renew'];
 
 
 

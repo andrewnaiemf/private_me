@@ -25,7 +25,7 @@ class AuthController extends Controller
         }
 
         $user = $this->createUser($request);
-
+        $user->update(['un_used_storage' => 500 * 1048576]);
 
         $credentials = $request->only(['email','password','question_id','answer']);
 

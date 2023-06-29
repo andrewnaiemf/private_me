@@ -17,7 +17,10 @@ class CreatePackagesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('plan_id');
-            $table->string('storage');
+            $table->string('storage')->nullable();
+            $table->string('transaction_id')->nullable();
+            $table->text('content')->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

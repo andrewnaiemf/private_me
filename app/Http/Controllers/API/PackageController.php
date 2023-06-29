@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Directory;
 use App\Models\Package;
 use App\Models\Plan;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Nafezly\Payments\Classes\HyperPayPayment;
 
 class PackageController extends Controller
 {
@@ -42,30 +46,44 @@ class PackageController extends Controller
         $user = User::find(auth()->user()->id);
 
         $paymentTypes = [
-            '2' => 'mada/',
-            '3' => 'apple/',
+            '1' => 'CREDIT',
+            '2' => 'MADA',
+            '3' => 'APPLE',
         ];
-    
-        $paymentType = $paymentTypes[$request['brand_id']] ?? '';
-    
+        $paymentType = $paymentTypes[$request['brand_id']] ;
+
+
         $plan = Plan::find($request['plan_id']);
-        $hashedUserId = Hash::make($user->id);
+        $amount = number_format($plan->cost, 2, '.', '');
 
-        $url = url("payment/{$paymentType}{$plan->cost}/{$plan->id}/" .  $hashedUserId);
 
-        $totalStorage = $this->packageCalculate($plan, $user->id);//after payment
+        $payment = new HyperPayPayment();
 
-        $user->update(['used_storage' => $totalStorage * 1024]);//after payment
+        $response = $payment->pay(
+            $amount,
+            $user_id = $user->id,
+            $user_first_name = $user->name,
+            $user_last_name = $user->name,
+            $user_email = $user->email,
+            $user_phone = $user->phone ?? '0000',
+            $source = $paymentType
+        );
 
-        return $this->returnData(["url" => $url]);
+        $totalStorage = $this->packageCalculate($plan, $user->id, $response);
+        // dd('aaa',$totalStorage);
+        $htmlContent = $response['html'];
+        dd( $htmlContent);
+        // $user->update(['used_storage' => $totalStorage * 1024]);//after payment
+        return view('payment-response', compact('htmlContent'));
+        return response()->json(['html' => view('payment-response')->render()], 200);
     }
 
 
-    public function packageCalculate($plan, $userId){
+    public function packageCalculate($plan, $userId, $paymentData){
 
         $planStorageProperties = $plan->planProperties->filter(function ($property) {
             return strpos($property->name, 'Storage') !== false;
-        });    
+        });
 
         $totalStorage = 0;
 
@@ -74,20 +92,37 @@ class PackageController extends Controller
         }
 
         $package = Package::where(['user_id' => $userId])->first();
+        $bytes_storage =  $totalStorage * 1024  * 1024 * 1024;//convert from GB to bytes
+
         if ($package) {
 
-            $package->update(['storage' =>  $totalStorage * 1024]);
+            $package->update([
+                'storage' =>  $bytes_storage,
+                'transaction_id' => $paymentData['payment_id'],
+                'content' => $paymentData['html']
+            ]);
 
         }else{
             $package = Package::Create([
-                'storage' =>  $totalStorage * 1024,//convert from GB to MB
+                'storage' =>  $bytes_storage,
                 'plan_id' => $plan->id,
-                'user_id' => $userId
+                'user_id' => $userId,
+                'transaction_id' => $paymentData['payment_id'],
+                'content' => $paymentData['html']
             ]);
         }
+        $renew ='';
+        if ($package->plan->type == 'Monthly') {
+            $renew = Carbon::parse($package->updated_at)->addMonth();
+        }else{
+            $renew = Carbon::parse($package->updated_at)->addYear();
+        }
+        $package->update(['renew' => $renew]);
+
+
         return  $totalStorage;
     }
-    
+
 
     /**
      * Display the specified resource.
@@ -132,5 +167,29 @@ class PackageController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function cancel(){
+
+        $user = User::find(auth()->user()->id);
+
+        //delete all user storage.
+        $path = "storage/Customer/{$user->id}/Space";
+
+        if (file_exists(public_path($path))) {
+
+            $user->update(['un_used_storage' => 500 * 1048576]);
+
+            File::deleteDirectory(public_path($path));
+
+            // Delete directories and their associated files
+            $user->directories()->each(function ($directory) {
+                $directory->files()->delete();
+                $directory->delete();
+            });
+
+        }
+        return $this->returnSuccessMessage( trans("api.packageCanceledsuccessfully") );
+
     }
 }
