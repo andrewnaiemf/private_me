@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\CityController;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\ChatController;
 use App\Http\Controllers\API\PackageController;
 use App\Http\Controllers\API\PlanController;
 use App\Http\Controllers\API\QuestionController;
@@ -38,6 +39,9 @@ Route::group([
     Route::post('login', [AuthController::class, 'login']);
 
     Route::post('forget_password', [AuthController::class, 'forgetPassword']);
+
+    Route::get('questions',[QuestionController::class, 'index' ]);
+
 });
 
 
@@ -65,7 +69,8 @@ Route::group([
 
     Route::resource('upload' ,  UploadUserDataController::class);
 
-    Route::get('questions',[QuestionController::class, 'index' ]);
+    Route::resource('chat', ChatController::class);
+
     Route::post('suggestion',[SuggestionController::class, 'store' ]);
 
 });
