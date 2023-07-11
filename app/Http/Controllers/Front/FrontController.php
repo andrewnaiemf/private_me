@@ -16,15 +16,15 @@ class FrontController extends Controller
         $payment = new HyperPayPayment();
         $response = $payment->verify($request);
         if($response['success']){
-            $user = User::find(auth()->user()->id);
-
             $package = Package::where(['transaction_id' => $response['payment_id']])->first();
+
+            $user = User::find($package->user_id);
+
             $user->update(['un_used_storage' => $package->storage]);//after payment
+            return $this->returnSuccessMessage(trans("api.PaymentCreatedSuccessfully"));
+
+        }else{
+            return $this->returnError(trans('api.PaymentFaild'));
         }
-        dd($response);
-
-
-
-        return $this->returnData(["url" => $url]);
     }
 }

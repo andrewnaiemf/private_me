@@ -27,7 +27,7 @@ Route::post('/reset_password', [AuthController::class, 'submitResetPasswordForm'
 Route::get('/payments/verify/{payment?}',[FrontController::class,'payment_verify'])->name('payment-verify');
 
 Route::get('/payment/{id}' ,function($id){
-    $response = Package::where(['transaction_id' => $id])->first();
-    $htmlContent = $response['content'];
+    $package = Package::where(['transaction_id' => $id])->first();
+    $htmlContent = $package['content'];
     return view('payment-response',compact('htmlContent'));
 });

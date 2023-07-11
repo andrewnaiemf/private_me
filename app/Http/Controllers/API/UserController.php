@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\Services\ScheduleService;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Facades\JWTAuth;
+
 use Storage;
 class UserController extends Controller
 {
@@ -72,7 +75,7 @@ class UserController extends Controller
 
     public function me(){
 
-        $user = User::find(auth()->user()->id);
+        $user = User::with('package.plan')->find(auth()->user()->id);
 
         return $this->returnData(['user' => $user]);
 
@@ -151,9 +154,23 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id , Request $request)
     {
-        $user = User::find($id);
+
+        $validator = Validator::make($request->all(), [
+            'password' => 'required',
+
+        ]);
+
+        if ($validator->fails()) {
+            return $this->returnValidationError(401,$validator->errors()->all());
+        }
+
+        $user = User::findOrFail(auth()->user()->id);
+
+        if (!Hash::check($request['password'], $user->password)) {
+            return $this->unauthorized();
+        }
 
         //delete all user storage.
         $path = "storage/Customer/{$user->id}";
@@ -171,6 +188,8 @@ class UserController extends Controller
             });
 
         }
+        $user->chats()->forceDelete();
+
         $user->forceDelete();
         return $this->returnSuccessMessage( trans("api.accountDeletedsuccessfully") );
     }

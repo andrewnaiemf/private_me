@@ -72,10 +72,15 @@ class PackageController extends Controller
         $totalStorage = $this->packageCalculate($plan, $user->id, $response);
         // dd('aaa',$totalStorage);
         $htmlContent = $response['html'];
-        dd( $htmlContent);
-        // $user->update(['used_storage' => $totalStorage * 1024]);//after payment
-        return view('payment-response', compact('htmlContent'));
-        return response()->json(['html' => view('payment-response')->render()], 200);
+
+        $package = Package::where(['user_id' => $user->id])->first();
+        $package->update(['payment_method' => $paymentType]);
+
+        $domain = env('APP_URL') ?? 'http://127.0.0.1:8000/';
+
+        $url = $domain.'payment/'.$package->transaction_id;
+        return $this->returnData(['url' => $url]);
+
     }
 
 
