@@ -22,7 +22,7 @@ class DirectoryController extends Controller
     public function index()
     {
 
-        $directories = ModelsDirectory::with('allChildren.files')
+        $directories = ModelsDirectory::with('files','allChildren.files')
         ->whereNull('parent_id')
         ->where(['user_id' => auth()->user()->id])
         ->get();

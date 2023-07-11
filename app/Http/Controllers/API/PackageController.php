@@ -87,7 +87,8 @@ class PackageController extends Controller
     public function packageCalculate($plan, $userId, $paymentData){
 
         $planStorageProperties = $plan->planProperties->filter(function ($property) {
-            return strpos($property->name, 'Storage') !== false;
+            return $property->translations->where('locale', 'en')->isNotEmpty()
+                && (strpos($property->name, 'Storage') !== false || strpos($property->name, 'Free Storage') !== false);
         });
 
         $totalStorage = 0;

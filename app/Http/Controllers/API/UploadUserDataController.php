@@ -46,14 +46,14 @@ class UploadUserDataController extends Controller
 
         $validator = Validator::make($request->all(), [
             'type' => 'required|string|in:video,image,file',
-            'image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'video.*' => 'nullable|mimetypes:video/mp4,video/mpeg,video/quicktime|max:50000',
-            'file.*' => 'nullable|mimes:pdf,doc,docx,xls,xlsx|max:2048',
-            'directory_id' => 'nullable|exists:directories,id'
+            'image.*' => 'nullable|required_if:type,image|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'video.*' => 'nullable|required_if:type,video|mimetypes:video/mp4,video/mpeg,video/quicktime|max:50000',
+            'file.*' => 'nullable|required_if:type,file|mimes:pdf,doc,docx,xls,xlsx|max:2048',
+            'directory_id' => 'nullable|exists:directories,id',
         ]);
 
         if ($validator->fails()) {
-            return $this->returnValidationError(401,$validator->errors()->all());
+            return $this->returnValidationError(401, $validator->errors()->toArray());
         }
 
 
@@ -86,7 +86,12 @@ class UploadUserDataController extends Controller
         $result = $this->upload($files, $path, $request->type, $types[$request->type], $directory_id );
 
         if(!$result){
-            return $this->returnError(trans("api.YouHaveNotEnoughSpace"));
+            $msg = trans("api.YouHaveNotEnoughSpace");
+            return response()->json([
+                'status' => false,
+                'msg' => is_array($msg) ? implode(', ', $msg) : $msg,
+                'type' => 0
+            ],422);
         }
 
         $size_bytes = $result->original['size_bytes'];

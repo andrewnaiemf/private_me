@@ -19,7 +19,7 @@ class FrontController extends Controller
             $package = Package::where(['transaction_id' => $response['payment_id']])->first();
 
             $user = User::find($package->user_id);
-
+            $package->update(['status'=>'PAID']);
             $user->update(['un_used_storage' => $package->storage]);//after payment
             return $this->returnSuccessMessage(trans("api.PaymentCreatedSuccessfully"));
 

@@ -12,7 +12,7 @@ class Package extends Model
     use HasFactory,SoftDeletes;
 
 
-    public $fillable = ['storage','user_id' ,'plan_id','content','transaction_id','renew','payment_method'];
+    public $fillable = ['status', 'storage','user_id' ,'plan_id','content','transaction_id','renew','payment_method'];
     protected $appends = ['is_subscribed'];
 
     // Accessor for the `is_subscribed` attribute
@@ -24,7 +24,10 @@ class Package extends Model
         // Compare the renew date with the current date
         $isSubscribed = Carbon::parse($renewDate)->isAfter(Carbon::now());
 
-        return $isSubscribed;
+        // Check the status is "PAID"
+        $status = $this->getAttribute('status');
+
+        return $isSubscribed && $status === 'PAID';
     }
 
     public function plan()
