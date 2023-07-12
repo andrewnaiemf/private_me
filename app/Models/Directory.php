@@ -12,7 +12,11 @@ class Directory extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = ['name', 'directory_type_id', 'user_id', 'size_bytes', 'left', 'right', 'parent_id'];
-
+    protected $hidden = [
+		'crraed_at',
+        'updated_at',
+        'deleted_at',
+	];
     public function user()
     {
         return $this->belongsTo(User::class);

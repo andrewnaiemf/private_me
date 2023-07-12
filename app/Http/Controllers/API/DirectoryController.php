@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Directory as ModelsDirectory;
 use App\Models\User;
+use Dash\Models\FileManagerModel;
 use Directory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -108,9 +109,16 @@ class DirectoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
-        //
+        $perPage = $request->header('per_page', 10);
+
+        $files = FileManagerModel::where([
+            'user_id' => auth()->user()->id,
+            'directory_id' => $id
+            ])->simplePaginate($perPage);
+
+        return $this->returnData($files);
     }
 
     /**
