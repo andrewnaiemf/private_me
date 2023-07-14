@@ -10,6 +10,7 @@ use App\Http\Controllers\API\SuggestionController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\DirectoryController;
 use App\Http\Controllers\API\UploadUserDataController;
+use App\Http\Controllers\API\FriendShipController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -73,4 +74,7 @@ Route::group([
 
     Route::post('suggestion',[SuggestionController::class, 'store' ]);
 
+    Route::get('friend/friend_request/{id}' ,   [FriendShipController::class, 'sendFriendRequest']);
+    Route::get('friend/search/{name}' ,   [FriendShipController::class, 'search']);
+    Route::put('friend/action/{id}', [FriendShipController::class, 'update']);
 });
