@@ -8,6 +8,7 @@ use App\Models\User;
 use Dash\Controllers\FileUploader;
 use Dash\Models\FileManagerModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 use function PHPUnit\Framework\isNull;
@@ -137,9 +138,22 @@ class UploadUserDataController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function renameFile(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->returnValidationError(401,$validator->errors()->all());
+        }
+
+        $user = User::find(auth()->user()->id);
+        $file = FileManagerModel::findOrFail($id);
+
+        $file->update(['name' => $request->name]);
+
+        return $this->returnSuccessMessage( trans("api.fileRenamedsuccessfully") );
     }
 
     /**
@@ -148,8 +162,24 @@ class UploadUserDataController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
+
+        $validator = Validator::make($request->all(), [
+            'password' => 'required',
+
+        ]);
+
+        if ($validator->fails()) {
+            return $this->returnValidationError(401,$validator->errors()->all());
+        }
+
+        $user = User::findOrFail(auth()->user()->id);
+
+        if (!Hash::check($request['password'], $user->password)) {
+            return $this->unauthorized();
+        }
+
         $user = User::find(auth()->user()->id);
 
         $file = FileManagerModel::find($id);

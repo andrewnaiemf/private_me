@@ -4,7 +4,7 @@ return [
 	 * App NAME
 	 * @param string
 	 */
-	'APP_NAME' => env('APP_NAME', 'private_me'),
+	'APP_NAME' => env('APP_NAME', 'dash'),
 
 	/**
 	 * App PATH IN DASHBOARD dont leave this is empty default is dash

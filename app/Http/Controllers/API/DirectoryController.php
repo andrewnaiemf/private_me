@@ -9,6 +9,7 @@ use Dash\Models\FileManagerModel;
 use Directory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\Finder\Finder;
 use Storage;
@@ -20,12 +21,23 @@ class DirectoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+
+        $validator = Validator::make($request->all(), [
+            'type' => 'required|string|in:video,image,file',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->returnValidationError(401, $validator->errors()->toArray());
+        }
+
+
+        $directories = ['video' => 1, 'image' => 2, 'file' => 3];
 
         $directories = ModelsDirectory::with('files','allChildren.files')
         ->whereNull('parent_id')
-        ->where(['user_id' => auth()->user()->id])
+        ->where(['user_id' => auth()->user()->id, 'directory_type_id' => $directories[$request->type]])
         ->get();
 
         return $this->returnData($directories);
@@ -178,8 +190,23 @@ class DirectoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'password' => 'required',
+
+        ]);
+
+        if ($validator->fails()) {
+            return $this->returnValidationError(401,$validator->errors()->all());
+        }
+
+        $user = User::findOrFail(auth()->user()->id);
+
+        if (!Hash::check($request['password'], $user->password)) {
+            return $this->unauthorized();
+        }
+
         $user = User::find(auth()->user()->id);
         $directory = ModelsDirectory::find($id);
         $basePath = "storage/Customer/{$user->id}/Space";

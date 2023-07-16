@@ -12,9 +12,13 @@ trait GeneralTrait
 
     public function returnError( $msg ,$code = 422)
     {
+        if (is_array($msg)) {
+            $msg = implode(', ', $msg);
+        }
+
         return response()->json([
             'status' => false,
-            'msg' => is_array($msg) ? implode(', ', $msg) : $msg
+            'msg' => $msg,
         ],$code);
     }
 
@@ -49,12 +53,16 @@ trait GeneralTrait
     }
 
 
-    //////////////////
     public function returnValidationError($code = "E001", $validator)
     {
-        return $this->returnError( $validator);
-    }
+        $messages = [];
 
+        foreach ($validator as $fieldErrors) {
+            $messages = array_merge($messages, $fieldErrors);
+        }
+
+        return $this->returnError($messages);
+    }
 
     public function returnCodeAccordingToInput($validator)
     {

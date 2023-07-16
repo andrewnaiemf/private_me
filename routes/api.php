@@ -69,6 +69,7 @@ Route::group([
     Route::resource('directory' ,  DirectoryController::class);
 
     Route::resource('upload' ,  UploadUserDataController::class);
+    Route::put('file/{id}' ,  [UploadUserDataController::class, 'renameFile']);
 
     Route::resource('chat', ChatController::class);
 
