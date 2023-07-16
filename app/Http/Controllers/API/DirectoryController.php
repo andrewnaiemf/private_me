@@ -142,7 +142,7 @@ class DirectoryController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'type' => 'string|required|In:videos,images,files',
+            'type' => 'string|required|In:video,image,file',
             'name' => 'required|string',
 
         ]);
