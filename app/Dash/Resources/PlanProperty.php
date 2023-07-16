@@ -111,7 +111,7 @@ class PlanProperty extends Resource {
                 ->make(__('dash.properties.icon'),'icon_url')
                 ->path(function ($model)
                 {
-                    return 'public/plans/'.$model->plan_id;
+                    return 'plans/'.$model->plan_id;
                 })
                 ->accept('image/*')
                 ->rule('required','image'),
