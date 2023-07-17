@@ -58,8 +58,13 @@ trait GeneralTrait
     {
         $messages = [];
 
-        foreach ($validator as $fieldErrors) {
-            $messages = array_merge($messages, $fieldErrors);
+        foreach ($validator as $index=>$fieldErrors) {
+            if (is_array($fieldErrors)) {
+                $messages =   array_merge($messages, $fieldErrors);
+            }else{
+                $messages[$index] = $fieldErrors;
+            }
+
         }
 
         return $this->returnError($messages, $type);
