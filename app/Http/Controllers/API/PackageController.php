@@ -76,7 +76,7 @@ class PackageController extends Controller
         $package = Package::where(['user_id' => $user->id])->first();
         $package->update(['payment_method' => $paymentType]);
 
-        $domain = env('APP_URL') ?? 'http://127.0.0.1:8000/';
+        $domain = env('APP_URL') ?? 'http://199.247.17.69/';
 
         $url = $domain.'payment/'.$package->transaction_id;
         return $this->returnData(['url' => $url]);
