@@ -54,7 +54,7 @@ class UploadUserDataController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->returnValidationError(401, $validator->errors()->toArray());
+            return $this->returnValidationError(401, $validator->errors()->toArray(),1);
         }
 
 

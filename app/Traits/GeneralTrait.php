@@ -10,7 +10,7 @@ trait GeneralTrait
         return app()->getLocale();
     }
 
-    public function returnError( $msg ,$code = 422)
+    public function returnError( $msg, $type= null, $code = 422)
     {
         if (is_array($msg)) {
             $msg = implode(', ', $msg);
@@ -19,6 +19,7 @@ trait GeneralTrait
         return response()->json([
             'status' => false,
             'msg' => $msg,
+            'type' => $type ?? ''
         ],$code);
     }
 
@@ -53,7 +54,7 @@ trait GeneralTrait
     }
 
 
-    public function returnValidationError($code = "E001", $validator)
+    public function returnValidationError($code = "E001", $validator , $type = null)
     {
         $messages = [];
 
@@ -61,7 +62,7 @@ trait GeneralTrait
             $messages = array_merge($messages, $fieldErrors);
         }
 
-        return $this->returnError($messages);
+        return $this->returnError($messages, $type);
     }
 
     public function returnCodeAccordingToInput($validator)
