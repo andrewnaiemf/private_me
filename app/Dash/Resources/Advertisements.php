@@ -86,11 +86,11 @@ class Advertisements extends Resource {
 		return [
 			id()->make(__('dash::dash.id'), 'id'),
             image()->make(__('dash.advertisements.image_ar'),'image_ar')
-            ->path('public/advertisements/{id}')
+            ->path('advertisements/{id}')
             ->accept('image/*')
             ->rule('required','image'),
             image()->make(__('dash.advertisements.image_en'),'image_en')
-            ->path('public/advertisements/{id}')
+            ->path('advertisements/{id}')
             ->accept('image/*')
             ->rule('required','image'),
         ];

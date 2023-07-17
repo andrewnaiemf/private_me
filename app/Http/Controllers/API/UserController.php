@@ -118,12 +118,12 @@ class UserController extends Controller
         if ($userProfile && file_exists(public_path('storage/'.$userProfile))) {
             $segments = explode('/', $userProfile);
             $imageName = $segments[3];
-            $profile->storeAs('public/'.$path,$imageName);
+            $profile->storeAs($path,$imageName);
 
         }else{
 
             $imageName = $profile->hashName();
-            $profile->storeAs('public/'.$path,$imageName);
+            $profile->storeAs($path,$imageName);
             $full_path = $path.$imageName;
 
             $user->update([

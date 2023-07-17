@@ -37,7 +37,7 @@ trait FileUploader {
                 $full_path = Storage::disk(env('FILESYSTEM_DRIVER', 's3'))->url($filePath);
             } else {
                 $full_path = $path.'/'.$hashname;
-                $file->store('public/'.$path);
+                $file->store($path);
             }
 
             $upload = FileManagerModel::create([
