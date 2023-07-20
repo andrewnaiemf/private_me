@@ -251,7 +251,7 @@ class FriendShipController extends Controller
 
         $perPage = $request->header('per_page', 10);
         $user = User::find(auth()->user()->id);
-        $friendships = $user->friendships->where('status', '!=', -1);
+        $friendships = $user->friendships->where('status', self::STATUS_ACCEPT);
 
         $friendsWithMessages = [];
 
@@ -296,12 +296,27 @@ class FriendShipController extends Controller
 
     public function getFriendMessages(User $user, User $friend)
     {
-        // Fetch the latest message between the user and friend
-        $message = Chat::where(function ($query) use ($user, $friend) {
-            $query->where(['sender_id' => $user->id, 'receiver_id' => $friend->id])
-                ->orWhere(['sender_id' => $friend->id, 'receiver_id' => $user->id]);
-        })->first();
+        // Fetch the latest message where the user is the sender and the friend is the receiver
+        $sentMessage = Chat::where('sender_id', $user->id)
+        ->where('receiver_id', $friend->id)
+        ->orderBy('created_at', 'desc')
+        ->first();
 
-        return $message;
+        // Fetch the latest message where the user is the receiver and the friend is the sender
+        $receivedMessage = Chat::where('sender_id', $friend->id)
+            ->where('receiver_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        // Compare the timestamps of the sent and received messages to get the latest one
+        if ($sentMessage && $receivedMessage) {
+            return $sentMessage->created_at > $receivedMessage->created_at ? $sentMessage : $receivedMessage;
+        } elseif ($sentMessage) {
+            return $sentMessage;
+        } elseif ($receivedMessage) {
+            return $receivedMessage;
+        } else {
+            return null; // No messages between the user and the friend
+        }
     }
 }
