@@ -70,6 +70,7 @@ Route::group([
 
     Route::resource('upload' ,  UploadUserDataController::class);
     Route::put('file/{id}' ,  [UploadUserDataController::class, 'renameFile']);
+    Route::get('files/{type}' ,  [UploadUserDataController::class, 'getAllFilesByType']);
 
     Route::resource('chat', ChatController::class);
 

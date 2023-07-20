@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Support\Facades\Hash;
+use Dash\Models\FileManagerModel;
 
 class User extends Authenticatable implements JWTSubject{
 	use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
@@ -140,6 +141,10 @@ class User extends Authenticatable implements JWTSubject{
 
     public function directories(){
         return $this->hasMany(Directory::class);
+    }
+
+    public function files(){
+        return $this->hasMany(FileManagerModel::class);
     }
 
     public function chats()

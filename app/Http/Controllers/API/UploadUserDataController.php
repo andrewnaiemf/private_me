@@ -195,4 +195,25 @@ class UploadUserDataController extends Controller
 
         return $this->returnSuccessMessage( trans("api.user'sFileDeletedSuccessfully") );
     }
+
+    public function getAllFilesByType($type, Request $request){
+
+        $perPage = $request->header('per_page', 10);
+
+        $validator = Validator::make(['type' => $type], [
+            'type' => 'required|string|in:video,image,file',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->returnValidationError(401, $validator->errors()->toArray(),1);
+        }
+
+
+        $user = User::find(auth()->user()->id);
+
+        $files = $user->files()->where('file_type', $type)->paginate($perPage);
+
+
+        return $this->returnData($files);
+    }
 }
