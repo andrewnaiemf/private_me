@@ -13,6 +13,23 @@ use Illuminate\Support\Facades\Validator;
 class ChatController extends Controller
 {
     use GeneralTrait;
+
+    const IMAGE = 1;
+    const VIDEO = 2;
+    const AUDIO = 3;
+    const TEXT = 4;
+
+
+    private function getTypesMapping()
+    {
+        return [
+            'image' => self::IMAGE,
+            'video' => self::VIDEO,
+            'audio' => self::AUDIO,
+            'text' => self::TEXT,
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -50,25 +67,42 @@ class ChatController extends Controller
     public function store(Request $request)
     {
         $user = auth()->user();
+        $typeMapping = $this->getTypesMapping();
 
-        $validator = $request->validate([
-            'receiver_id' => [
-                'required',
-                Rule::exists('users', 'id')
-            ]
+        $validator = Validator::make($request->all(), [
+            'type' => 'required|in:' . implode(',', array_keys($typeMapping)),
+            'receiver_id' => 'required|exists:users,id',
+            'message' => 'required|string',
+
         ]);
+
+        if ($validator->fails()) {
+            return $this->returnValidationError(401,$validator->errors()->all());
+        }
 
         $receiver_id = $request->receiver_id;
 
         $chat = $user->chats()
-            ->where('receiver_id', $receiver_id)
+            ->where(['receiver_id'=> $receiver_id])
             ->whereNull('deleted_at')
             ->first();
 
+        $message = $request->type == 'text' ? substr($request->message, 0, 5).'....' :  $request->message;
+
+        $requestedtype = $typeMapping[$request->type];
         if (!$chat) {
             $chat = Chat::create([
                 'sender_id' => $user->id,
                 'receiver_id' => $receiver_id,
+                'type' => $requestedtype,
+                'message' => $message,
+                'is_read' => 0,
+            ]);
+        }else{
+            $chat->update([
+                'type' => $requestedtype,
+                'message' => $message,
+                'is_read' => 0,
             ]);
         }
 

@@ -10,7 +10,7 @@ class Chat extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['sender_id', 'receiver_id'];
+    protected $fillable = ['sender_id', 'receiver_id', 'message', 'type', 'is_read'];
 
     protected $visible = ['id', 'sender_id', 'receiver_id','sender','receiver'];
 
