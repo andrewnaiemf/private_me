@@ -10,6 +10,23 @@ use Illuminate\Support\Facades\Validator;
 
 class FriendShipController extends Controller
 {
+
+    const STATUS_ACCEPT = 1;
+    const STATUS_REJECT = -1;
+    const STATUS_DELETE = -2;
+    const STATUS_CANCEL = -3;
+
+
+    private function getStatusMapping()
+    {
+        return [
+            'Accept' => self::STATUS_ACCEPT,
+            'Reject' => self::STATUS_REJECT,
+            'Delete' => self::STATUS_DELETE,
+            'Cancel' => self::STATUS_CANCEL,
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -123,16 +140,24 @@ class FriendShipController extends Controller
 
     public function update(Request $request, $id)
     {
-        $status = ['Accept' => 1,'Reject' => -1];
+        $statusMapping = $this->getStatusMapping();
         $loggedInUserId = auth()->user()->id;
 
         // Validate the request data
         $validator = Validator::make($request->all(), [
-            'status' => 'required|In:Accept,Reject,Delete',
+            'status' => 'required|in:' . implode(',', array_keys($statusMapping)),
         ]);
 
         if ($validator->fails()) {
             return $this->returnValidationError(401,$validator->errors()->all());
+        }
+
+        // Handle cancel request
+        if ($request->status === 'Cancel') {
+            $cancelledFriendship = $this->cancelFriendship($loggedInUserId, $id);
+            if ($cancelledFriendship) {
+                return $this->returnSuccessMessage("Friendship canceled successfully");
+            }
         }
 
         // Find the friendship record between the users
@@ -145,17 +170,19 @@ class FriendShipController extends Controller
         })->first();
 
         if ($friendship) {
-            if ($friendship->status == 0 && in_array($request->status, array_keys($status))) {
+            $requestedStatus = $statusMapping[$request->status];
+
+            if ($friendship->status === 0 && in_array($requestedStatus, [self::STATUS_ACCEPT, self::STATUS_REJECT])) {
                 // Update the friendship status
-                $friendship->status = $status[$request->status];
+                $friendship->status = $requestedStatus;
                 $friendship->save();
 
-                if ($friendship->status == 1) {
+                if ($requestedStatus === self::STATUS_ACCEPT) {
                     return $this->returnSuccessMessage("Friendship request accepted");
-                } elseif ($friendship->status == -1) {
+                } elseif ($requestedStatus === self::STATUS_REJECT) {
                     return $this->returnSuccessMessage("Friendship request rejected");
                 }
-            }else if($request->status == 'Delete'){
+            } elseif ($requestedStatus === self::STATUS_DELETE) {
                 $friendship->delete();
                 return $this->returnSuccessMessage("Friendship request deleted");
             }
@@ -163,6 +190,12 @@ class FriendShipController extends Controller
 
         return $this->returnError("Friendship request not found");
     }
+
+    private function cancelFriendship($loggedInUserId, $id)
+    {
+        return Friendship::where(['sender_id' => $loggedInUserId, 'receiver_id' => $id])->delete();
+    }
+
 
     /**
      * Remove the specified resource from storage.
