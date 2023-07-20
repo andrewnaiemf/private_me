@@ -89,7 +89,8 @@ class AuthController extends Controller
             'question_id' => $request->question_id,
             'answer' => $request->answer,
             'terms' => $request->terms,
-            'lng' => $request->header('locale') ?? 'en'
+            'lng' => $request->header('locale') ?? 'en',
+            'profile' => 'Customer/default/th.jpg'
         ]);
         $this->device_token($request->device_token, $user);
         $user->update(['account_type' => 'user']);
