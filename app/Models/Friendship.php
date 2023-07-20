@@ -10,6 +10,7 @@ class Friendship extends Model
     use HasFactory;
 
     public $table = "frindships";
+    public $fillable = ['status', 'sender_id','receiver_id'];
 
     public function sender()
     {

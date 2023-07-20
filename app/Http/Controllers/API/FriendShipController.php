@@ -98,11 +98,12 @@ class FriendShipController extends Controller
                 $msg = "Friendship request sent";
             }
         }else{
-            $newFriendship = new Friendship();
-            $newFriendship->sender_id = $loggedInUserId;
-            $newFriendship->receiver_id = $id;
-            $newFriendship->status = 0;
-            $newFriendship->save();
+            Friendship::create([
+                'sender_id' => $loggedInUserId,
+                'receiver_id' => $id,
+                'status' => 0
+            ]);
+            $msg = "Friendship request sent";
         }
 
         return $this->returnSuccessMessage($msg);
