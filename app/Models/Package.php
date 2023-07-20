@@ -18,6 +18,11 @@ class Package extends Model
     // Accessor for the `is_subscribed` attribute
     public function getIsSubscribedAttribute()
     {
+
+        if($this->getAttribute('deleted_at')){
+            return false;
+        }
+
         // Get the renew date
         $renewDate = $this->getAttribute('renew');
 

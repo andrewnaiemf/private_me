@@ -62,7 +62,11 @@ class AuthController extends Controller
         }
 
 
-        $user = User::with('package.plan.planProperties')->find(auth()->user()->id);
+        $user = User::with(['package' => function ($query) {
+                        $query->withTrashed();
+                        },'package.plan.planProperties'
+                    ])->find(auth()->user()->id);
+
         $user->update([
             'lng' => $request->header('locale') ??  $user->lng
         ]);

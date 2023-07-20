@@ -195,6 +195,14 @@ class PackageController extends Controller
             });
 
         }
+
+
+        $package = Package::where(['user_id' => $user->id])->first();
+
+        if (isset($package)) {
+            $package->delete();
+        }
+
         return $this->returnSuccessMessage( trans("api.packageCanceledsuccessfully") );
 
     }
