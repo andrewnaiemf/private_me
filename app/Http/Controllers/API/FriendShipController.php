@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Chat;
 use App\Models\Friendship;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class FriendShipController extends Controller
 {
@@ -206,5 +208,60 @@ class FriendShipController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function myFriends(Request $request){
+
+        $perPage = $request->header('per_page', 10);
+        $user = User::find(auth()->user()->id);
+        $friendships = $user->friendships->where('status', '!=', -1);
+
+        $friendsWithMessages = [];
+
+        foreach ($friendships as $friendship) {
+            $friend = $friendship->receiver_id === $user->id ? $friendship->sender : $friendship->receiver;
+            $friendWithMessages = $friend->toArray();
+            $friendWithMessages['message'] = $this->getFriendMessages($user, $friend);
+            $friendsWithMessages[] = $friendWithMessages;
+        }
+
+        //Sort friends by the latest message timestamp
+        usort($friendsWithMessages, function ($a, $b) {
+            if (isset($a['message']) && isset($b['message'])) {
+                return strcmp($b['message']['updated_at'], $a['message']['updated_at']);
+            }
+            return 0;
+        });
+
+
+        // Convert the array to a Laravel Collection
+        $friendsCollection = collect($friendsWithMessages);
+
+        // Get the current page from the request
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+
+        // Define how many items to display per page
+        $perPage = $perPage;
+
+        // Slice the collection to get the items to display for the current page
+        $currentPageFriends = $friendsCollection->slice(($currentPage - 1) * $perPage, $perPage)->all();
+
+        // Create a new LengthAwarePaginator instance
+        $paginatedFriends = new LengthAwarePaginator($currentPageFriends, count($friendsCollection), $perPage, $currentPage, [
+            'path' => LengthAwarePaginator::resolveCurrentPath(),
+        ]);
+
+        return $this->returnData($paginatedFriends);
+    }
+
+    public function getFriendMessages(User $user, User $friend)
+    {
+        // Fetch the latest message between the user and friend
+        $message = Chat::where(function ($query) use ($user, $friend) {
+            $query->where(['sender_id' => $user->id, 'receiver_id' => $friend->id])
+                ->orWhere(['sender_id' => $friend->id, 'receiver_id' => $user->id]);
+        })->first();
+
+        return $message;
     }
 }

@@ -79,4 +79,5 @@ Route::group([
     Route::get('friend/friend_request/{id}' ,   [FriendShipController::class, 'sendFriendRequest']);
     Route::get('friend/search/{name}' ,   [FriendShipController::class, 'search']);
     Route::put('friend/action/{id}', [FriendShipController::class, 'update']);
+    Route::get('friends', [FriendShipController::class, 'myFriends']);
 });
