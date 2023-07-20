@@ -29,6 +29,43 @@ class FriendShipController extends Controller
         ];
     }
 
+    public function notifications(Request $request)
+    {
+        $perPage = $request->header('per_page', 10);
+
+        $user = auth()->user();
+        $friendships = $user->friendships;
+
+        $notifications = [];
+
+        foreach ($friendships as $friendship) {
+            $friend = $friendship->receiver_id === $user->id ? $friendship->sender : $friendship->receiver;
+            $notification = [
+                'friend_id' => $friend->id,
+                'friend_name' => $friend->name,
+                'status' => $friendship->status,
+                'message' => $friendship->friendship_message,
+            ];
+            $notifications[] = $notification;
+        }
+        // Convert the array to a Laravel Collection
+        $notificationsCollection = collect($notifications);
+
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+
+        // Slice the collection to get the items to display for the current page
+        $currentPageNotifications = $notificationsCollection->slice(($currentPage - 1) * $perPage, $perPage);
+
+        // Reindex the keys of the data array
+        $data = $currentPageNotifications->values();
+
+        // Create a new LengthAwarePaginator instance
+        $paginatedNotifications = new LengthAwarePaginator($data, count($notificationsCollection), $perPage, $currentPage, [
+            'path' => LengthAwarePaginator::resolveCurrentPath(),
+        ]);
+        return $this->returnData($paginatedNotifications);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -244,10 +281,13 @@ class FriendShipController extends Controller
         $perPage = $perPage;
 
         // Slice the collection to get the items to display for the current page
-        $currentPageFriends = $friendsCollection->slice(($currentPage - 1) * $perPage, $perPage)->all();
+        $currentPageFriends = $friendsCollection->slice(($currentPage - 1) * $perPage, $perPage);
+
+        // Reindex the keys of the data array
+        $data = $currentPageFriends->values();
 
         // Create a new LengthAwarePaginator instance
-        $paginatedFriends = new LengthAwarePaginator($currentPageFriends, count($friendsCollection), $perPage, $currentPage, [
+        $paginatedFriends = new LengthAwarePaginator($data, count($friendsCollection), $perPage, $currentPage, [
             'path' => LengthAwarePaginator::resolveCurrentPath(),
         ]);
 
