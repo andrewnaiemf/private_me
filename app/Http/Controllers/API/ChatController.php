@@ -18,6 +18,7 @@ class ChatController extends Controller
     const VIDEO = 2;
     const AUDIO = 3;
     const TEXT = 4;
+    const FILE = 5;
 
 
     private function getTypesMapping()
@@ -27,6 +28,7 @@ class ChatController extends Controller
             'video' => self::VIDEO,
             'audio' => self::AUDIO,
             'text' => self::TEXT,
+            'file' => self::FILE,
         ];
     }
 
