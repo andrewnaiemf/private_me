@@ -117,9 +117,11 @@ class ChatController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id)//read message
     {
-        //
+        $message = Chat::findOrFail($id);
+        $message->update(['is_read' => 1]);
+        return $this->returnSuccessMessage(trans("api.Message_Read_successfully"));
     }
 
     /**
