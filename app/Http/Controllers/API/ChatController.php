@@ -75,6 +75,7 @@ class ChatController extends Controller
             'type' => 'required|in:' . implode(',', array_keys($typeMapping)),
             'receiver_id' => 'required|exists:users,id',
             'message' => 'required|string',
+            'firebase_id' => 'required|string',
 
         ]);
 
@@ -99,12 +100,14 @@ class ChatController extends Controller
                 'type' => $requestedtype,
                 'message' => $message,
                 'is_read' => 0,
+                'firebase_id' => $request->firebase_id
             ]);
         }else{
             $chat->update([
                 'type' => $requestedtype,
                 'message' => $message,
                 'is_read' => 0,
+                'firebase_id' => $request->firebase_id
             ]);
         }
 
@@ -153,14 +156,14 @@ class ChatController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($firebase_id)
     {
-        $chat = Chat::find($id);
+        $message = Chat::where(['firebase_id' => $firebase_id])->first();
 
-        if ($chat) {
-            $chat->delete();
+        if ($message) {
+            $message->delete();
         }
 
-        return $this->returnSuccessMessage(trans("api.user_blocked_successfully"));
+        return $this->returnSuccessMessage(trans("api.message_deleted_successfully"));
     }
 }

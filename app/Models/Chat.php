@@ -16,9 +16,9 @@ class Chat extends Model
         const AUDIO = 3;
         const TEXT = 4;
 
-    protected $fillable = ['sender_id', 'receiver_id', 'message', 'type', 'is_read'];
+    protected $fillable = ['sender_id', 'receiver_id', 'message', 'type', 'is_read','firebase_id'];
 
-    protected $visible = ['id', 'sender_id', 'receiver_id','sender','receiver', 'message', 'type', 'is_read'];
+    protected $visible = ['id', 'sender_id', 'receiver_id','sender','receiver', 'message', 'type', 'is_read','firebase_id'];
 
 
      // Accessor for 'type' attribute
