@@ -75,10 +75,21 @@ class UserController extends Controller
 
     public function me(){
 
-        $user = User::with(['package' => function ($query) {
-            $query->withTrashed();
-            },'package.plan.planProperties'
-        ])->find(auth()->user()->id);
+        $user = User::find(auth()->user()->id);
+        // with(['package' => function ($query) {
+        //     $query->withTrashed();
+        //     },'package.plan.planProperties'
+        // ])->
+        if($user->package){
+            $user->load('package.plan.planProperties');
+        }else{
+            $trashedPackage = $user->package()->onlyTrashed()->latest()->first();
+
+            if ($trashedPackage) {
+                $trashedPackage->load('plan.planProperties');
+                $user->setRelation('package', $trashedPackage);
+            }
+        }
 
         return $this->returnData(['user' => $user]);
 

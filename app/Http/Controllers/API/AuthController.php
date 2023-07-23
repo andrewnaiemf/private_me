@@ -62,10 +62,18 @@ class AuthController extends Controller
         }
 
 
-        $user = User::with(['package' => function ($query) {
-                        $query->withTrashed();
-                        },'package.plan.planProperties'
-                    ])->find(auth()->user()->id);
+        $user = User::find(auth()->user()->id);
+
+        if($user->package){
+            $user->load('package.plan.planProperties');
+        }else{
+            $trashedPackage = $user->package()->onlyTrashed()->latest()->first();
+
+            if ($trashedPackage) {
+                $trashedPackage->load('plan.planProperties');
+                $user->setRelation('package', $trashedPackage);
+            }
+        }
 
         $user->update([
             'lng' => $request->header('locale') ??  $user->lng

@@ -101,14 +101,22 @@ class PackageController extends Controller
         $bytes_storage =  $totalStorage * 1024  * 1024 * 1024;//convert from GB to bytes
 
         if ($package) {
-
             $package->update([
                 'storage' =>  $bytes_storage,
                 'transaction_id' => $paymentData['payment_id'],
-                'content' => $paymentData['html']
+                'content' => $paymentData['html'],
+                'plan_id' => $plan->id,
+                'status' => null,
             ]);
 
         }else{
+            // Get the soft-deleted packages for the user
+            $packages = Package::onlyTrashed()->where('user_id', $userId)->get();
+
+            // Loop through the packages and force delete them
+            foreach ($packages as $package) {
+                $package->forceDelete();
+            }
             $package = Package::Create([
                 'storage' =>  $bytes_storage,
                 'plan_id' => $plan->id,
@@ -181,11 +189,9 @@ class PackageController extends Controller
 
         //delete all user storage.
         $path = "storage/Customer/{$user->id}/Space";
+        $user->update(['un_used_storage' => 500 * 1048576]);
 
         if (file_exists(public_path($path))) {
-
-            $user->update(['un_used_storage' => 500 * 1048576]);
-
             File::deleteDirectory(public_path($path));
 
             // Delete directories and their associated files
