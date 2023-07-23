@@ -85,6 +85,19 @@ class FriendShipController extends Controller
         $result = [];
 
         foreach ($users as $user) {
+            // Initialize the sender_id as null
+            $senderId = null;
+
+            // Check if the user has sentFriendships and get the sender_id from the first relationship
+            if ($user->sentFriendships->isNotEmpty()) {
+                $senderId = $user->sentFriendships->first()->sender_id;
+            }
+
+            // If sender_id is still null, check if the user has receivedFriendships and get the sender_id from the first relationship
+            if (!$senderId && $user->receivedFriendships->isNotEmpty()) {
+                $senderId = $user->receivedFriendships->first()->sender_id;
+            }
+
             $result[] = [
                 'id' => $user->id,
                 'uuid' => $user->uuid,
@@ -92,6 +105,7 @@ class FriendShipController extends Controller
                 'profile' => $user->profile ?? '',
                 'avatar_location' => $user->avatar_location,
                 'email' => $user->email,
+                'sender_id' => $senderId,
                 'is_friend' => $user->status, // Append the friendship status using the `status` attribute
             ];
         }
