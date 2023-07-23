@@ -43,6 +43,7 @@ class FriendShipController extends Controller
             $notification = [
                 'friend_id' => $friend->id,
                 'friend_name' => $friend->name,
+                'friend_profile' => $friend->profile,
                 'status' => $friendship->status,
                 'message' => $friendship->friendship_message,
             ];
