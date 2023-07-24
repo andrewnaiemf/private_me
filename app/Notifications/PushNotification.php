@@ -41,7 +41,7 @@ class PushNotification
         ];
 
         $encodedData = json_encode($data);
-dd( $data);
+
         $headers = [
             'Authorization:key=' . $serverKey,
             'Content-Type: application/json',
