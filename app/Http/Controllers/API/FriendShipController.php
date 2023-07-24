@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Chat;
 use App\Models\Friendship;
 use App\Models\User;
+use App\Notifications\PushNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -169,12 +170,13 @@ class FriendShipController extends Controller
                 $msg = "Friendship request sent";
             }
         }else{
+            $reciever = User::findOrFail($id);
             Friendship::create([
                 'sender_id' => $loggedInUserId,
                 'receiver_id' => $id,
                 'status' => 0
             ]);
-            $msg = "Friendship request sent";
+            $this->sendFriendshipNotification($reciever, 0);
         }
 
         return $this->returnSuccessMessage($msg);
@@ -231,9 +233,12 @@ class FriendShipController extends Controller
                 $friendship->status = $requestedStatus;
                 $friendship->save();
 
+                $reciever = User::findOrFail($id);
                 if ($requestedStatus === self::STATUS_ACCEPT) {
+                    $this->sendFriendshipNotification($reciever, 1);
                     return $this->returnSuccessMessage("Friendship request accepted");
                 } elseif ($requestedStatus === self::STATUS_REJECT) {
+                    $this->sendFriendshipNotification($reciever, -1);
                     return $this->returnSuccessMessage("Friendship request rejected");
                 }
             } elseif ($requestedStatus === self::STATUS_DELETE) {
@@ -334,4 +339,28 @@ class FriendShipController extends Controller
             return null; // No messages between the user and the friend
         }
     }
+
+    private function sendFriendshipNotification($reciever, $status)
+    {
+        $friend = User::findOrFail($reciever->id);
+        app()->setLocale($friend->lng);
+
+        // Determine the localized message based on the friendship status
+        $msg = '';
+        switch ($status) {
+            case 0:
+                $msg = __('friendship.sent_request', ['friend_name' => $friend->name]);
+                break;
+            case 1:
+                $msg = __('friendship.accepted_request', ['friend_name' => $friend->name]);
+                break;
+            case -1:
+                $msg = __('friendship.rejected_request', ['friend_name' => $friend->name]);
+                break;
+        }
+        $screen = 'notification_screen';
+
+        PushNotification::send($reciever, $screen, $msg);
+    }
+
 }

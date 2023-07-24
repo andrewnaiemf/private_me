@@ -31,6 +31,5 @@ return [
     'pleaseContactWithAdministrator' => 'من فضلك تواصل مع الدمن',
     'suggestion_sent_successfully' => 'تم ارسال افتراحك بنجاح',
     'chackYourEmailToResetYourPassword ' => 'افحص بريدك الالكتروني لاعادة رقمك السري',
-    'the_package_renewal_date_is_:' => 'تاريخ تجديد الباقة يكون '
 
 ];

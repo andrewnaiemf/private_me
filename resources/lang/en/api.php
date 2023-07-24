@@ -31,6 +31,5 @@ return [
     'pleaseContactWithAdministrator' => 'Please contact with administrator',
     'suggestion_sent_successfully' => 'suggestion sent successfully',
     'chackYourEmailToResetYourPassword' => 'chack your email to reset your password',
-    'the_package_renewal_date_is_:' => 'the package renewal date is : '
 
 ];
