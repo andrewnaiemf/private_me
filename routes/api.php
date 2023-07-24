@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\AdvertisementController;
 use App\Http\Controllers\API\CityController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\ChatController;
@@ -82,5 +83,8 @@ Route::group([
     Route::get('friends', [FriendShipController::class, 'myFriends']);
 
     Route::get('notifications', [FriendShipController::class, 'notifications']);
+
+    Route::get('advertisements',  [AdvertisementController::class, 'index']);
+
 
 });
