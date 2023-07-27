@@ -15,12 +15,31 @@ class Chat extends Model
         const VIDEO = 2;
         const AUDIO = 3;
         const TEXT = 4;
+        const FILE = 5;
 
     protected $fillable = ['sender_id', 'receiver_id', 'message', 'type', 'is_read','firebase_id'];
 
     protected $visible = ['id', 'sender_id', 'receiver_id','sender','receiver', 'message', 'type', 'is_read','firebase_id'];
 
 
+
+    public function getMessageAttribute($value){
+
+        switch ($this->type) {
+            case 'image':
+                return __('friendship.send_you_an_image');
+            case 'video':
+                return  __('friendship.send_you_a_video');
+            case 'audio':
+                return  __('friendship.send_you_an_audio');
+            case 'file':
+                return  __('friendship.send_you_a_file');
+            case 'text':
+                return $value;
+            default:
+                return null;
+        }
+    }
      // Accessor for 'type' attribute
      public function getTypeAttribute($value)
      {
