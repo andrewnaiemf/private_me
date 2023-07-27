@@ -19,6 +19,16 @@ class FrontController extends Controller
             $package = Package::where(['transaction_id' => $response['payment_id']])->first();
 
             $user = User::find($package->user_id);
+
+            $oldPackages = $user->package()->whereNotIn('transaction_id', [$response['payment_id']])->get();//delete
+
+            if($oldPackages){
+                foreach ($oldPackages as  $oldPackage) {
+                    $oldPackage->forceDelete();
+                }
+
+            }
+
             $package->update(['status'=>'PAID']);
             $user->update(['un_used_storage' => $package->storage]);//after payment
             return $this->returnSuccessMessage(trans("api.PaymentCreatedSuccessfully"));

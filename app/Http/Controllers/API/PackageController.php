@@ -69,12 +69,12 @@ class PackageController extends Controller
             $source = $paymentType
         );
 
-        $totalStorage = $this->packageCalculate($plan, $user->id, $response);
+        $totalStorage = $this->packageCalculate($plan, $user->id, $response, $paymentType);
         // dd('aaa',$totalStorage);
         $htmlContent = $response['html'];
 
-        $package = Package::where(['user_id' => $user->id])->first();
-        $package->update(['payment_method' => $paymentType]);
+        $package = Package::where(['user_id' => $user->id])->latest()->first();
+
 
         $domain = env('APP_URL') ?? 'http://199.247.17.69/';
 
@@ -84,7 +84,7 @@ class PackageController extends Controller
     }
 
 
-    public function packageCalculate($plan, $userId, $paymentData){
+    public function packageCalculate($plan, $userId, $paymentData, $paymentType){
 
         $planStorageProperties = $plan->planProperties->filter(function ($property) {
             return $property->translations->where('locale', 'en')->isNotEmpty()
@@ -100,7 +100,7 @@ class PackageController extends Controller
         $package = Package::where(['user_id' => $userId])->first();
         $bytes_storage =  $totalStorage * 1024  * 1024 * 1024;//convert from GB to bytes
 
-        if ($package) {
+        if (isset($package) && $package->status != 'PAID') {
             $package->update([
                 'storage' =>  $bytes_storage,
                 'transaction_id' => $paymentData['payment_id'],
@@ -113,16 +113,18 @@ class PackageController extends Controller
             // Get the soft-deleted packages for the user
             $packages = Package::onlyTrashed()->where('user_id', $userId)->get();
 
-            // Loop through the packages and force delete them
+            //Loop through the packages and force delete them
             foreach ($packages as $package) {
                 $package->forceDelete();
             }
+
             $package = Package::Create([
                 'storage' =>  $bytes_storage,
                 'plan_id' => $plan->id,
                 'user_id' => $userId,
                 'transaction_id' => $paymentData['payment_id'],
-                'content' => $paymentData['html']
+                'content' => $paymentData['html'],
+                'payment_method' => $paymentType
             ]);
         }
         $renew ='';

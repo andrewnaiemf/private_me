@@ -44,6 +44,7 @@ class User extends Authenticatable implements JWTSubject{
     {
         $userArray = parent::toArray();
         $userArray = array_merge(['id' => $this->id], $userArray);
+        $userArray = array_merge(['is_subscribed' => $this->package && $this->package['is_subscribed'] ?? $this->package['is_subscribed']], $userArray);
         return $userArray;
     }
 

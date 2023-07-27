@@ -63,8 +63,9 @@ class AuthController extends Controller
 
 
         $user = User::find(auth()->user()->id);
+        $paidPackage = $user->package()->where('status', 'PAID')->first();
 
-        if($user->package){
+        if($paidPackage){
             $user->load('package.plan.planProperties');
         }else{
             $trashedPackage = $user->package()->onlyTrashed()->latest()->first();
