@@ -129,7 +129,7 @@ class UserController extends Controller
         $path = 'Customer/' .$user->id. '/Profile/';
 
         $userProfile =  $user->profile;
-        if ($userProfile && file_exists(public_path('storage/'.$userProfile))) {
+        if ($userProfile && $userProfile != 'Customer/default/th.jpg' && file_exists(public_path('storage/'.$userProfile))) {
             $segments = explode('/', $userProfile);
             $imageName = $segments[3];
             $profile->storeAs($path,$imageName);
