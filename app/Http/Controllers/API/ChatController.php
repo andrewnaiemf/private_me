@@ -85,7 +85,7 @@ class ChatController extends Controller
 
         $receiver_id = $request->receiver_id;
 
-        $chat = Chat::where('senderid' ,$user->id)
+        $chat = Chat::where('sender_id' ,$user->id)
             ->where(['receiver_id'=> $receiver_id])
             ->whereNull('deleted_at')
             ->first();
