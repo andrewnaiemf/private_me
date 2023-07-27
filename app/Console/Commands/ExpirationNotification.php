@@ -61,6 +61,8 @@ class ExpirationNotification extends Command
                 if(isset($msg)){
                     PushNotification::send($reciever, $screen, $msg, null, 1);
                 }
+            }elseif ($daysDifference <= 0) {//logic for expired package
+                $package->delete();
             }
 
         $this->info('Demo:Cron Cummand Run successfully!');
