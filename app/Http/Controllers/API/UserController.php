@@ -80,16 +80,26 @@ class UserController extends Controller
         //     $query->withTrashed();
         //     },'package.plan.planProperties'
         // ])->
+        $trashedPackage = $user->package()->onlyTrashed()->latest()->first();
+
         if($user->package){
             $user->load('package.plan.planProperties');
-        }else{
-            $trashedPackage = $user->package()->onlyTrashed()->latest()->first();
+        }elseif( $trashedPackage){
 
-            if ($trashedPackage) {
-                $trashedPackage->load('plan.planProperties');
-                $user->setRelation('package', $trashedPackage);
-            }
+            $trashedPackage->load('plan.planProperties');
+            $user->setRelation('package', $trashedPackage);
+
+        }else{
+            $user->load('package');
+
         }
+
+        $paidPackage = $user->package()->where('status', 'PAID')->first();
+
+        $trashedPackage = $user->package()->onlyTrashed()->latest()->first();
+
+
+
 
         return $this->returnData(['user' => $user]);
 
