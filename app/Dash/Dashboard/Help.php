@@ -1,6 +1,7 @@
 <?php
 namespace App\Dash\Dashboard;
 
+use App\Models\Package as ModelsPackage;
 use App\Models\Plan;
 use Dash\Extras\Inputs\Card;
 //use Dash\Extras\Inputs\HTML;
@@ -35,8 +36,9 @@ class Help extends Resource {
                 ->icon(function () {
                     return '<i class="fa fa-users"></i>';
                 })
-                ->content(function () {
-                    return User::where('account_type', 'user')->count();
+                ->content(function () use ($plan){
+                    $usersCount = ModelsPackage::where(['status' => 'PAID', 'plan_id' => $plan->id])->count();
+                    return $usersCount;
                 })
                 ->color(function () {
                     return 'success';

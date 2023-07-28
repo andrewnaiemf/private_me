@@ -140,6 +140,11 @@ class User extends Authenticatable implements JWTSubject{
         return $this->hasOne(Package::class);
     }
 
+    public function plan()
+    {
+        return $this->hasOneThrough(Plan::class, Package::class, 'user_id', 'id', 'id', 'plan_id')->whereNull('packages.deleted_at');
+    }
+
     public function directories(){
         return $this->hasMany(Directory::class);
     }

@@ -32,6 +32,11 @@ class Plan  extends Model implements TranslatableContract
         return $this->hasMany(PlanProperty::class);
     }
 
+    public function users()
+    {
+        return $this->hasManyThrough(User::class, Package::class, 'plan_id', 'id', 'id', 'user_id')->whereNull('packages.deleted_at')->where('packages.status' , 'PAID');
+    }
+
     protected $hidden = [
 		'crraed_at',
         'updated_at',

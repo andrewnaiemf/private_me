@@ -1,13 +1,13 @@
 <?php
 namespace App\Dash\Resources;
 use Dash\Resource;
-
+use App\Dash\Resources\Users;
 class Plan extends Resource {
-	
+
 	/**
 	 * define Model of resource
 	 * @param Model Class
-	 */ 
+	 */
 	public static $model = \App\Models\Plan::class ;
 
 
@@ -25,7 +25,7 @@ class Plan extends Resource {
 	 * and add this key directly users
 	 * @param static property
 	 */
-	public static $group = 'Plan'; 
+	public static $group = 'Plan';
 
 	/**
 	 * show or hide resouce In Navigation Menu true|false
@@ -103,10 +103,14 @@ class Plan extends Resource {
                 __('dash.plans.Monthly')  => __('dash.plans.Monthly'),
                 __('dash.plans.Yearly') => __('dash.plans.Yearly'),
                ]),
-            
+
             hasMany()
             ->make(__('dash.plans.properties'), 'planProperties', PlanProperty::class)
-            ->hideInIndex(),   
+            ->hideInIndex(),
+
+            hasManyThrough()
+            ->make(__('dash.plans.users'), 'users', Users::class)
+            ->hideInIndex(),
 		];
 	}
 
