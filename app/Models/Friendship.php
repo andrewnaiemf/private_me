@@ -17,12 +17,19 @@ class Friendship extends Model
     {
         $currentLanguage = app()->getLocale();
 
+        $friend_name = '';
+        if (auth()->user()->id == $this->sender_id) {
+            $friend_name = $this->receiver->name;
+        }else{
+            $friend_name = $this->sender->name;
+        }
+
         if ($this->status == 1) {
-            return __('friendship.accepted', ['friend_name' => $this->receiver->name]);
+            return __('friendship.accepted', ['friend_name' => $friend_name]);
         } elseif ($this->status == 0) {
-            return __('friendship.pending', ['friend_name' => $this->receiver->name]);
+            return __('friendship.pending', ['friend_name' => $friend_name]);
         } elseif ($this->status == -1) {
-            return __('friendship.rejected', ['friend_name' => $this->receiver->name]);
+            return __('friendship.rejected', ['friend_name' => $friend_name]);
         }
 
         return '';

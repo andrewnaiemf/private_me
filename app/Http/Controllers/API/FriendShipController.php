@@ -40,6 +40,12 @@ class FriendShipController extends Controller
         $notifications = [];
 
         foreach ($friendships as $friendship) {
+            if($friendship->sender_id == $user->id){
+                continue;
+            }
+            // elseif ($friendship->sender_id == $user->id && $friendship->status != 0) {
+            //     dd('a');
+            // }
             $friend = $friendship->receiver_id === $user->id ? $friendship->sender : $friendship->receiver;
             $notification = [
                 'friend_id' => $friend->id,

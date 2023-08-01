@@ -76,10 +76,7 @@ class UserController extends Controller
     public function me(){
 
         $user = User::find(auth()->user()->id);
-        // with(['package' => function ($query) {
-        //     $query->withTrashed();
-        //     },'package.plan.planProperties'
-        // ])->
+
         $trashedPackage = $user->package()->onlyTrashed()->latest()->first();
 
         if($user->package){
@@ -93,13 +90,6 @@ class UserController extends Controller
             $user->load('package');
 
         }
-
-        $paidPackage = $user->package()->where('status', 'PAID')->first();
-
-        $trashedPackage = $user->package()->onlyTrashed()->latest()->first();
-
-
-
 
         return $this->returnData(['user' => $user]);
 
