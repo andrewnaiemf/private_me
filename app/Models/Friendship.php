@@ -23,10 +23,12 @@ class Friendship extends Model
         }else{
             $friend_name = $this->sender->name;
         }
-
-        if(auth()->user()->id == $this->sender_id){
+// dd(auth()->user()->id , $this->sender_id , $this->receiver_id);
+        if(auth()->user()->id != $this->sender_id){
             if ($this->status == 1) {
                 return __('friendship.YouAccepted', ['friend_name' => $friend_name]);
+            }elseif ($this->status == 0) {
+                return __('friendship.pending', ['friend_name' => $friend_name]);
             } elseif ($this->status == -1) {
                 return __('friendship.YouRejected', ['friend_name' => $friend_name]);
             }
