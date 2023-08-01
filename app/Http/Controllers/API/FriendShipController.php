@@ -40,12 +40,9 @@ class FriendShipController extends Controller
         $notifications = [];
 
         foreach ($friendships as $friendship) {
-            if($friendship->sender_id == $user->id){
+            if($friendship->sender_id == $user->id && $friendship->status == 0){
                 continue;
             }
-            // elseif ($friendship->sender_id == $user->id && $friendship->status != 0) {
-            //     dd('a');
-            // }
             $friend = $friendship->receiver_id === $user->id ? $friendship->sender : $friendship->receiver;
             $notification = [
                 'friend_id' => $friend->id,
@@ -183,6 +180,7 @@ class FriendShipController extends Controller
                 'status' => 0
             ]);
             $this->sendFriendshipNotification($reciever, 0);
+            $msg = "Friendship request sent";
         }
 
         return $this->returnSuccessMessage($msg);
