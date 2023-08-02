@@ -53,6 +53,8 @@ class Chat extends Model
                  return 'audio';
              case self::TEXT:
                  return 'text';
+            case self::FILE:
+                return 'file';
              default:
                  return null;
          }

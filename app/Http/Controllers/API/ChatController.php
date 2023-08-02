@@ -8,6 +8,8 @@ use App\Traits\GeneralTrait;
 use Illuminate\Validation\Rule;
 use App\Models\Chat;
 use App\Models\Captain;
+use App\Models\User;
+use App\Notifications\PushNotification;
 use Illuminate\Support\Facades\Validator;
 
 class ChatController extends Controller
@@ -84,7 +86,7 @@ class ChatController extends Controller
         }
 
         $receiver_id = $request->receiver_id;
-
+        $receiver = User::find($receiver_id);
         $chat = Chat::where('sender_id' ,$user->id)
             ->where(['receiver_id'=> $receiver_id])
             ->whereNull('deleted_at')
@@ -101,7 +103,7 @@ class ChatController extends Controller
                 'message' => $message,
                 'is_read' => 0,
                 'firebase_id' => $request->firebase_id
-            ]);
+            ]);dd('teeee');
         }else{
             $chat->update([
                 'type' => $requestedtype,
@@ -111,8 +113,24 @@ class ChatController extends Controller
             ]);
         }
 
+        $this->sendFriendshipNotification($receiver, $chat);
+
         return $this->returnSuccessMessage(trans("api.Chat_opend_successfully"));
     }
+
+    private function sendFriendshipNotification($reciever, $chat)
+    {
+        $friend = User::findOrFail($reciever->id);
+        app()->setLocale($friend->lng);
+        $user = User::find(auth()->user()->id);
+
+        $msg = $user->name .' '. $chat->message;
+
+        $screen = 'chat_screen';
+
+        PushNotification::send($friend, $screen, $msg);
+    }
+
 
     /**
      * Display the specified resource.
