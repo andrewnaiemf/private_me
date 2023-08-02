@@ -348,23 +348,23 @@ class FriendShipController extends Controller
     {
         $friend = User::findOrFail($reciever->id);
         app()->setLocale($friend->lng);
-
+        $user = User::find(auth()->user()->id);
         // Determine the localized message based on the friendship status
         $msg = '';
         switch ($status) {
             case 0:
-                $msg = __('friendship.sent_request', ['friend_name' => $friend->name]);
+                $msg = __('friendship.sent_request', ['friend_name' => $user->name]);
                 break;
             case 1:
-                $msg = __('friendship.accepted_request', ['friend_name' => $friend->name]);
+                $msg = __('friendship.accepted_request', ['friend_name' => $user->name]);
                 break;
             case -1:
-                $msg = __('friendship.rejected_request', ['friend_name' => $friend->name]);
+                $msg = __('friendship.rejected_request', ['friend_name' => $user->name]);
                 break;
         }
         $screen = 'notification_screen';
 
-        PushNotification::send($reciever, $screen, $msg);
+        PushNotification::send($friend, $screen, $msg);
     }
 
 }
