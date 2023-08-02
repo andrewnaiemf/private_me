@@ -17,6 +17,9 @@ class Friendship extends Model
     {
         $currentLanguage = app()->getLocale();
 
+        $friendLocale = $this->receiver->lng;
+        app()->setLocale($friendLocale);
+
         $friend_name = '';
         if (auth()->user()->id == $this->sender_id) {
             $friend_name = $this->receiver->name;

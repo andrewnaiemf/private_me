@@ -9,6 +9,9 @@ class PushNotification
 {
     public static function send($reciever, $screen, $message, $notification_data = null, $type = null)
     {
+        $friendLocale = $reciever->lng;
+        app()->setLocale($friendLocale);
+
         $url = 'https://fcm.googleapis.com/fcm/send';
         $serverKey = env('FCM_KEY') ?? 'AAAAGIXjgfY:APA91bGtS4VfEcC3r90nHGBG_0bTzszhSYgl2UwE1W3SitQjgbkPHle7fwaerx27RNeKY2szc0WAMzEvDHbRRad8EjnHsY1w8xgCqb2_XJKtpO_SSIeIDuCvz1cv50TSGDjhSlhG536K';
         $devs=[];
