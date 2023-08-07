@@ -103,13 +103,15 @@ class ChatController extends Controller
                 'message' => $message,
                 'is_read' => 0,
                 'firebase_id' => $request->firebase_id
-            ]);dd('teeee');
+            ]);
         }else{
             $chat->update([
                 'type' => $requestedtype,
                 'message' => $message,
                 'is_read' => 0,
-                'firebase_id' => $request->firebase_id
+                'firebase_id' => $request->firebase_id,
+                'sender_id' => $user->id,
+                'receiver_id' => $receiver_id
             ]);
         }
 
