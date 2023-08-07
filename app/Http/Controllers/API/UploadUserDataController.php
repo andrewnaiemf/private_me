@@ -184,7 +184,7 @@ class UploadUserDataController extends Controller
 
         $file = FileManagerModel::find($id);
 
-        $full_path = 'public/' .$file->full_path;
+        $full_path = $file->full_path;
 
         if( \Storage::exists($full_path)){
             $user->un_used_storage += $file->size_bytes;
