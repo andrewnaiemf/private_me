@@ -10,11 +10,13 @@
         "doctrine/dbal": "^3.6",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
+        "intervention/image": "^2.7",
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "nafezly/payments": "^2.4",
         "phpanonymous/dash": "*",
+        "spatie/pdf-to-image": "^1.2",
         "tymon/jwt-auth": "^1.0"
     },
     "require-dev": {
