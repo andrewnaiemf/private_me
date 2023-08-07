@@ -25,32 +25,6 @@ class FileManagerModel extends Model {
 		'mimtype',
         'directory_id'
 	];
-    protected $appends = ['first_page_image'];
-
-    public function getFirstPageImageAttribute()
-    {
-        switch ($this->ext) {
-            case 'pdf':
-                return 'Default/pdf.png';
-                break;
-            case 'csv':
-                return 'Default/csv.png';
-                break;
-            case 'Doc':
-                return 'Default/Doc.png';
-                break;
-            case 'txt':
-                return 'Default/txt.png';
-                break;
-            case 'xml':
-                return 'Default/xml.png';
-                break;
-            default:
-                return null;
-                break;
-        }
-    }
-
 
 	public function user() {
 		return \DB::table('users')->where('id', $this->user_id)->first();
