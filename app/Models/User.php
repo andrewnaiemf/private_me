@@ -173,24 +173,4 @@ class User extends Authenticatable implements JWTSubject{
         return $this->hasMany(Friendship::class, 'sender_id')->orWhere('receiver_id', $this->id);
     }
 
-    public function getStatusAttribute()
-    {
-        $friendships = $this->friendships;
-
-        if (is_iterable($friendships)) {
-            foreach ($friendships as $friendship) {
-
-                if ($friendship->status == 1) {
-                    return 'Accepted';
-                } else if ($friendship->status == 0) {
-                    return 'Pending';
-                }else if ($friendship->status == -1){
-                    return 'Rejected';
-                }
-            }
-        }
-
-        return 'No';
-    }
-
 }

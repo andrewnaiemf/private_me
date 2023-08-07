@@ -78,28 +78,49 @@ class FriendShipController extends Controller
      */
     public function search($name)
     {
+        $authUserId = auth()->user()->id;
+
         $users = User::where('name', 'LIKE', '%' . $name . '%')
-        ->where('email', '!=', auth()->user()->email)
-        ->with(['sentFriendships' => function ($query) {
-            $query->whereIn('status', [null,0, 1]);
-        }, 'receivedFriendships' => function ($query) {
-            $query->whereIn('status', [null,0, 1]);
-        }])
-        ->get();
+            ->where('id', '!=', $authUserId)
+            ->with(['friendships' => function ($query) use ($authUserId) {
+                $query->where(function ($q) use ($authUserId) {
+                    $q->where('sender_id', $authUserId)
+                    ->orWhere('receiver_id', $authUserId);
+                });
+            }])
+            ->get();
+
+        $result = $this->filterFriends($users);
+
+        return $this->returnData($result);
+    }
+
+    public function filterFriends($users){
+
         $result = [];
 
-        foreach ($users as $user) {
+        $authUserId = auth()->user()->id;
+
+        $myfriendships_ids = User::find($authUserId)->friendships->pluck('id')->toArray();
+
+        foreach ($users as $index=>$user) {
             // Initialize the sender_id as null
             $senderId = null;
 
-            // Check if the user has sentFriendships and get the sender_id from the first relationship
-            if ($user->sentFriendships->isNotEmpty()) {
-                $senderId = $user->sentFriendships->first()->sender_id;
-            }
+            $friendshipStatus = 'No';
+            $friendships = $user->friendships()->get();
 
-            // If sender_id is still null, check if the user has receivedFriendships and get the sender_id from the first relationship
-            if (!$senderId && $user->receivedFriendships->isNotEmpty()) {
-                $senderId = $user->receivedFriendships->first()->sender_id;
+            foreach ($friendships as $friendship) {
+                if ($friendship && in_array($friendship->id , $myfriendships_ids)) {
+                    if ($friendship->status === 1) {
+                        $friendshipStatus = 'Accepted';
+                    } else if ($friendship->status === 0) {
+                        $friendshipStatus = 'Pending';
+                    } else if ($friendship->status === -1) {
+                        $friendshipStatus = 'Rejected';
+                    }
+                    $senderId = $friendship->sender_id;
+                }
             }
 
             $result[] = [
@@ -110,11 +131,12 @@ class FriendShipController extends Controller
                 'avatar_location' => $user->avatar_location,
                 'email' => $user->email,
                 'sender_id' => $senderId,
-                'is_friend' => $user->status, // Append the friendship status using the `status` attribute
+                'is_friend' => $friendshipStatus, // Append the friendship status using the `status` attribute
             ];
         }
 
-        return $this->returnData($result);
+        return $result;
+
     }
 
     /**
