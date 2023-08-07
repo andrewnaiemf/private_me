@@ -25,20 +25,39 @@ class Chat extends Model
 
     public function getMessageAttribute($value){
 
-        switch ($this->type) {
-            case 'image':
-                return __('friendship.send_you_an_image');
-            case 'video':
-                return  __('friendship.send_you_a_video');
-            case 'audio':
-                return  __('friendship.send_you_an_audio');
-            case 'file':
-                return  __('friendship.send_you_a_file');
-            case 'text':
-                return $value;
-            default:
-                return null;
+        $authUserId = auth()->user()->id;
+        if($authUserId == $this->receiver_id){
+            switch ($this->type) {
+                case 'image':
+                    return __('friendship.send_you_an_image');
+                case 'video':
+                    return  __('friendship.send_you_a_video');
+                case 'audio':
+                    return  __('friendship.send_you_an_audio');
+                case 'file':
+                    return  __('friendship.send_you_a_file');
+                case 'text':
+                    return $value;
+                default:
+                    return null;
+            }
+        }else{
+            switch ($this->type) {
+                case 'image':
+                    return __('friendship.you_sent_an_image');
+                case 'video':
+                    return  __('friendship.you_sent_a_video');
+                case 'audio':
+                    return  __('friendship.you_sent_an_audio');
+                case 'file':
+                    return  __('friendship.you_sent_a_file');
+                case 'text':
+                    return $value;
+                default:
+                    return null;
+            }
         }
+
     }
      // Accessor for 'type' attribute
      public function getTypeAttribute($value)

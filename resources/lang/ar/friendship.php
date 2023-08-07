@@ -13,4 +13,8 @@ return [
     'send_you_a_video' => 'ارسل لك فيديو',
     'send_you_an_audio' => 'ارسل لك صوت',
     'send_you_a_file' => 'ارسل لك ملف',
+    'you_sent_an_image' => 'ارسلت صورة',
+    'you_sent_a_video' => 'ارسلت فيديو',
+    'you_sent_an_audio' => 'ارسلت سالة صوتية',
+    'you_sent_a_file' => 'ارسلت ملف',
 ];
