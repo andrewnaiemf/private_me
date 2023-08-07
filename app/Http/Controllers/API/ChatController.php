@@ -92,7 +92,7 @@ class ChatController extends Controller
             ->whereNull('deleted_at')
             ->first();
 
-        $message = $request->type == 'text' ? substr($request->message, 0, 5).'....' :  $request->message;
+        $message =  $request->message;
 
         $requestedtype = $typeMapping[$request->type];
         if (!$chat) {
