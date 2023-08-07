@@ -140,7 +140,7 @@ class ChatController extends Controller
      */
     public function show($id)//read message
     {
-        $message = Chat::where('firebase_id',$id)->first();
+        $message = Chat::where('id',$id)->first();
         $message->update(['is_read' => 1]);
         return $this->returnSuccessMessage(trans("api.Message_Read_successfully"));
     }
