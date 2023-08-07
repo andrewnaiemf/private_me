@@ -14,6 +14,7 @@ class Plan  extends Model implements TranslatableContract
     public $translatedAttributes = ['name'];
 
     public $fillable = ['type'];
+    public $appends = ['plan_type'];
 
     public function getTypeAttribute($value)
     {
@@ -26,6 +27,19 @@ class Plan  extends Model implements TranslatableContract
 
         return $value;
     }
+
+    public function getPlanTypeAttribute()
+    {
+        if ($this->type === 'شهريا') {
+            return 'Monthly';
+        }elseif($this->type === 'سنويا'){
+            return 'Yearly';
+
+        }else{
+            return $this->type;
+        }
+    }
+
 
     public function planProperties()
     {
