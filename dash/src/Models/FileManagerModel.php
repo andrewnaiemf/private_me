@@ -29,25 +29,25 @@ class FileManagerModel extends Model {
 
     public function getFirstPageImageAttribute()
     {
-        if ($this->file_id == 3 && in_array($this->ext, ['pdf'])) {
-
-            if (Storage::exists($this->full_path)) {
-                $imagick = new Imagick();
-                $imagick->readImage($this->full_path . '[0]'); // Read only the first page
-                $imgSavePath = $this->path . Str::beforeLast($this->name, '.') . '.png';
-                if (!Storage::exists($imgSavePath)) {
-                    $imgSavePath = storage_path($imgSavePath);
-                    $imagick->setImageFormat('png');
-                    $imagick->writeImage($imgSavePath);
-                    return Storage::url($imgSavePath);
-                }else{
-                    return $imgSavePath;
-                }
-
-            } else {
-                // Handle case where the PDF file doesn't exist
+        switch ($this->ext) {
+            case 'pdf':
+                return 'Default/pdf.png';
+                break;
+            case 'csv':
+                return 'Default/csv.png';
+                break;
+            case 'Doc':
+                return 'Default/Doc.png';
+                break;
+            case 'txt':
+                return 'Default/txt.png';
+                break;
+            case 'xml':
+                return 'Default/xml.png';
+                break;
+            default:
                 return null;
-            }
+                break;
         }
     }
 
