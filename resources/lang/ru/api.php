@@ -1,3 +1,4 @@
+<?php
 return [
     "user'sdataUpdatedSuccessfully" => "Данные пользователя успешно обновлены",
     "card_created_successfully" => 'Карта успешно создана',

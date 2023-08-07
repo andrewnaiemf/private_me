@@ -1,3 +1,4 @@
+<?php
 return [
     'accepted' => ':friend_name a accepté votre demande d\'amitié',
     'YouAccepted' => 'Vous avez accepté la demande d\'amitié de :friend_name',

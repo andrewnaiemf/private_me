@@ -1,3 +1,4 @@
+<?php
 return [
     "user'sdataUpdatedSuccessfully" => '用户数据更新成功',
     "card_created_successfully" => '卡片创建成功',
