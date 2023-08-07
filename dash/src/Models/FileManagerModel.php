@@ -33,7 +33,7 @@ class FileManagerModel extends Model {
 
             if (Storage::exists($this->full_path)) {
                 $imagick = new Imagick();
-                $imagick->readImage($$this->full_path . '[0]'); // Read only the first page
+                $imagick->readImage($this->full_path . '[0]'); // Read only the first page
                 $imgSavePath = $this->path . Str::beforeLast($this->name, '.') . '.png';
                 if (!Storage::exists($imgSavePath)) {
                     $imgSavePath = storage_path($imgSavePath);
