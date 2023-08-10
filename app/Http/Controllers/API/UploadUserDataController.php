@@ -47,9 +47,9 @@ class UploadUserDataController extends Controller
 
         $validator = Validator::make($request->all(), [
             'type' => 'required|string|in:video,image,file',
-            'image.*' => 'nullable|required_if:type,image|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image.*' => 'nullable|required_if:type,image|image|mimes:jpeg,png,jpg,gif,svg|max:10000',
             'video.*' => 'nullable|required_if:type,video||mimetypes:video/avi,video/mpeg,video/quicktime,video/mp4,video/webm,video/3gpp,video/3gpp2,video/x-matroska,video/mov',
-            'file.*' => 'nullable|required_if:type,file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx|max:2048',
+            'file.*' => 'nullable|required_if:type,file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx|max:10000',
             'directory_id' => 'nullable|exists:directories,id',
         ]);
 
