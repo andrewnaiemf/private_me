@@ -131,8 +131,13 @@ class UserController extends Controller
         $userProfile =  $user->profile;
         if ($userProfile && $userProfile != 'Customer/default/picture.jpg' && file_exists(public_path('storage/'.$userProfile))) {
             \Storage::delete($userProfile);
+
             $imageName = $profile->hashName();
             $profile->storeAs($path,$imageName);
+            $full_path = $path.$imageName;
+            $user->update([
+                'profile' => $full_path
+            ]);
 
         }else{
 
