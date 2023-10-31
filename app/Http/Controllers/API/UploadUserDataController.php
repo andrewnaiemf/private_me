@@ -105,7 +105,7 @@ class UploadUserDataController extends Controller
             $user->update(['un_used_storage' => $user->un_used_storage]);
         }
 
-        return $this->returnSuccessMessage( trans("api.user'sdataUploadedSuccessfully") );
+        return $this->returnSuccessMessage( trans("api.user'sdataUpdatedSuccessfully") );
 
     }
 
