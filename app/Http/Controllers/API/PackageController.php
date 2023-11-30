@@ -76,7 +76,7 @@ class PackageController extends Controller
         $package = Package::where(['user_id' => $user->id])->latest()->first();
 
 
-        $domain = env('APP_URL') ?? 'http://app.privatemesa.com/';
+        $domain = env('APP_URL') ?? 'https://privatemesa.co/';
 
         $url = $domain.'payment/'.$package->transaction_id;
         return $this->returnData(['url' => $url]);
