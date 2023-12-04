@@ -14,6 +14,7 @@ use App\Http\Controllers\API\UploadUserDataController;
 use App\Http\Controllers\API\FriendShipController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,7 +43,17 @@ Route::group([
 
     Route::post('forget_password', [AuthController::class, 'forgetPassword']);
 
-    Route::get('questions',[QuestionController::class, 'index' ]);
+    Route::get('questions', [QuestionController::class, 'index' ]);
+
+    Route::get('app/status', function () {
+
+        $lunched = false;
+
+        return response()->json([
+            'lunched' => false
+        ], Response::HTTP_OK);
+
+    });
 
 });
 
@@ -54,37 +65,37 @@ Route::group([
 
 ], function () {
 
-    Route::get('logout',  [AuthController::class, 'logout']);
-    Route::post('refresh',  [AuthController::class, 'refresh']);
-    Route::post('change_password' ,  [AuthController::class, 'changepassword']);
+    Route::get('logout', [AuthController::class, 'logout']);
+    Route::post('refresh', [AuthController::class, 'refresh']);
+    Route::post('change_password', [AuthController::class, 'changepassword']);
 
-    Route::get('me' ,  [UserController::class, 'me']);
-    Route::post('user' ,  [UserController::class, 'update']);
-    Route::delete('user/{id}' ,  [UserController::class, 'destroy']);
+    Route::get('me', [UserController::class, 'me']);
+    Route::post('user', [UserController::class, 'update']);
+    Route::delete('user/{id}', [UserController::class, 'destroy']);
 
-    Route::resource('plan' ,  PlanController::class);
+    Route::resource('plan', PlanController::class);
 
-    Route::resource('package' ,  PackageController::class);
-    Route::post('package/cancel' ,[PackageController::class, 'cancel' ]);
+    Route::resource('package', PackageController::class);
+    Route::post('package/cancel', [PackageController::class, 'cancel' ]);
 
-    Route::resource('directory' ,  DirectoryController::class);
+    Route::resource('directory', DirectoryController::class);
 
-    Route::resource('upload' ,  UploadUserDataController::class);
-    Route::put('file/{id}' ,  [UploadUserDataController::class, 'renameFile']);
-    Route::get('files/{type}' ,  [UploadUserDataController::class, 'getAllFilesByType']);
+    Route::resource('upload', UploadUserDataController::class);
+    Route::put('file/{id}', [UploadUserDataController::class, 'renameFile']);
+    Route::get('files/{type}', [UploadUserDataController::class, 'getAllFilesByType']);
 
     Route::resource('chat', ChatController::class);
 
-    Route::post('suggestion',[SuggestionController::class, 'store' ]);
+    Route::post('suggestion', [SuggestionController::class, 'store' ]);
 
-    Route::get('friend/friend_request/{id}' ,   [FriendShipController::class, 'sendFriendRequest']);
-    Route::get('friend/search/{name}' ,   [FriendShipController::class, 'search']);
+    Route::get('friend/friend_request/{id}', [FriendShipController::class, 'sendFriendRequest']);
+    Route::get('friend/search/{name}', [FriendShipController::class, 'search']);
     Route::put('friend/action/{id}', [FriendShipController::class, 'update']);
     Route::get('friends', [FriendShipController::class, 'myFriends']);
 
     Route::get('notifications', [FriendShipController::class, 'notifications']);
 
-    Route::get('advertisements',  [AdvertisementController::class, 'index']);
+    Route::get('advertisements', [AdvertisementController::class, 'index']);
 
 
 });
